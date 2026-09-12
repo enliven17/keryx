@@ -258,9 +258,17 @@ treasury = cost - earner`}</code>
             <section id="quickstart" className="doc-section">
               <h2>Quickstart</h2>
               <p>
-                You need Node.js 22 with pnpm, Foundry, and a PostgreSQL connection string. The
-                local stack runs a Creditcoin-compatible chain on Anvil, so you can exercise
-                campaigns, the auction and claims without touching a testnet.
+                A hosted instance is already running: the dashboard at{" "}
+                <a href="https://keryx-jet.vercel.app" target="_blank" rel="noreferrer">
+                  keryx-jet.vercel.app
+                </a>{" "}
+                against the API at{" "}
+                <a href="https://keryx-api-production-3731.up.railway.app/health" target="_blank" rel="noreferrer">
+                  keryx-api-production-3731.up.railway.app
+                </a>
+                . To run your own you need Node.js 22 with pnpm, Foundry, and a PostgreSQL
+                connection string. The local stack runs a Creditcoin-compatible chain on Anvil, so
+                you can exercise campaigns, the auction and claims without touching a testnet.
               </p>
               <pre>
                 <code>{`git clone https://github.com/<you>/keryx && cd keryx

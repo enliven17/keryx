@@ -31,6 +31,16 @@ The server never calls the CTC settlement contract with an unproven report. It p
 | extension/ | VS Code extension that injects the sponsored line and reports viewable events. |
 | cli/ | Standalone status-line daemon for Claude Code. |
 
+## Live
+
+| | |
+| --- | --- |
+| Dashboard | https://keryx-jet.vercel.app |
+| API | https://keryx-api-production-3731.up.railway.app |
+
+The API and the Attestcoin worker run as one Railway service; the dashboard is
+on Vercel. Both read the same Creditcoin deployment below.
+
 ## Deployed testnet addresses
 
 Creditcoin testnet (chain 102031, explorer https://creditcoin-testnet.blockscout.com):
@@ -145,6 +155,29 @@ forge verify-contract <address> <path>:<name> --show-standard-json-input > input
 # then POST input.json as files[0] to
 # <explorer>/api/v2/smart-contracts/<address>/verification/via/standard-input
 # with compiler_version=v0.8.28+commit.7893614a, license_type=mit, contract_name=<name>
+~~~
+
+
+## Hosting
+
+The server and worker deploy as a single Railway service from the repo root,
+with `KERYX_RUN_WORKER=true` so the Attestcoin worker shares the process:
+
+~~~bash
+railway up --service keryx-api
+~~~
+
+Contract addresses come from `contracts/deployments/<network>.json` on a local
+checkout and from the environment otherwise, since that file holds deployer keys
+and is never committed. A hosted deployment therefore needs the address
+variables (`CAMPAIGN_ESCROW`, `AUCTION_HOUSE`, `ATTESTCOIN_SETTLEMENT`,
+`SOURCE_ENGAGEMENT`, `USDC_ADDRESS`, `TREASURY`) alongside the keys.
+
+The dashboard deploys to Vercel with the project's root directory set to `web`,
+so the workspace lockfile at the repo root is the one that installs:
+
+~~~bash
+vercel deploy --prod
 ~~~
 
 ## Hackathon fit

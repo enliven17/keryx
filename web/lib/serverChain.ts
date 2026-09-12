@@ -1,26 +1,16 @@
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
-import { createWalletClient, createPublicClient, http, type Address } from "viem";
+import { createWalletClient, createPublicClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { anvil, creditcoinTestnet } from "./chains";
+import { loadDeployment, type Deployment } from "./deployment";
 
-interface FullDeployment {
-  chainId: number;
-  rpcUrl: string;
-  usdc: Address;
-  sourceEngagement: Address;
-  campaignEscrow: Address;
-  auctionHouse: Address;
-  attestcoinSettlement: Address;
-  treasury: Address;
-  deployerPrivateKey?: `0x${string}`;
-}
+type FullDeployment = Deployment & { deployerPrivateKey?: `0x${string}` };
 
+/** The public deployment plus, on a local checkout only, the key the dev faucet signs with. */
 export function fullDeployment(): FullDeployment | null {
-  const network = process.env.NEXT_PUBLIC_KERYX_NETWORK ?? "anvil";
-  const file = join(process.cwd(), "..", "contracts", "deployments", `${network}.json`);
-  if (!existsSync(file)) return null;
-  try { return JSON.parse(readFileSync(file, "utf8")) as FullDeployment; } catch { return null; }
+  const base = loadDeployment();
+  if (!base) return null;
+  const key = process.env.DEPLOYER_PRIVATE_KEY as `0x${string}` | undefined;
+  return { ...base, deployerPrivateKey: key };
 }
 
 export function serverChain() {
@@ -34,4 +24,8 @@ export function serverChain() {
   return { d, chain, publicClient, walletClient, account };
 }
 
-export function devWritesAvailable(): boolean { return !!fullDeployment()?.deployerPrivateKey; }
+/** The faucet mints test USDC, so it exists only where a local chain does. */
+export function devWritesAvailable(): boolean {
+  const d = fullDeployment();
+  return Boolean(d?.deployerPrivateKey && d.chainId !== 102031);
+}

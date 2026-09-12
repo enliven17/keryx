@@ -1,0 +1,14 @@
+{
+  "name": "keryx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pay-per-attention marketplace for AI coding sessions, settled on Creditcoin.",
+  "packageManager": "pnpm@10.18.2",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "pnpm --filter @keryx/server start",
+    "dev": "pnpm --filter @keryx/web dev",
+    "typecheck": "pnpm --filter @keryx/server typecheck && pnpm --filter @keryx/web typecheck",
+    "test": "cd contracts && forge test"
+  }
+}

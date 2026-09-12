@@ -1,0 +1,14 @@
+# Keep every workspace package: pnpm-workspace.yaml lists them and a frozen
+# install fails if one is missing. Drop only what is heavy and rebuildable.
+**/node_modules/
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/deployments/
+web/.next/
+web/test-results/
+web/playwright-report/
+extension/dist/
+server/data/
+.git/

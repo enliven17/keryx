@@ -233,6 +233,14 @@ app.post("/settle/flush", async (c) => c.json({ anchored: await flushSourceEngag
 process.on("unhandledRejection", (reason) => console.error("[server] unhandled rejection:", reason));
 
 if (deployment.sourcePrivateKey) startSourceAnchorLoop();
+
+// One process on a single host: the Attestcoin worker runs beside the API
+// rather than as a second service. Locally it stays a separate `pnpm worker`.
+if (process.env.KERYX_RUN_WORKER === "true") {
+  void import("./attestcoin-worker.js").catch((error) =>
+    console.error("[server] worker failed to start:", message(error)),
+  );
+}
 serve({ fetch: app.fetch, port: config.port }, (info) => {
   console.log(`[server] Keryx listening on http://localhost:${info.port} (${config.network})`);
   console.log(`[server] CTC settlement=${addresses.attestcoinSettlement} source=${addresses.sourceEngagement}`);

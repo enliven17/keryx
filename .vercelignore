@@ -1,0 +1,11 @@
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/deployments/
+server/data/
+extension/dist/
+**/node_modules/
+web/.next/
+web/test-results/
+web/playwright-report/
