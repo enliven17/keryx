@@ -324,7 +324,7 @@ body {
 }
 
 /* ─── Scroll reveals (IntersectionObserver adds .in) ─────── */
-.js .reveal {
+[data-js] .reveal {
   opacity: 0;
   transform: translateY(26px);
   transition:
@@ -332,14 +332,14 @@ body {
     transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--d, 0ms);
 }
-.js .reveal.in {
+[data-js] .reveal.in {
   opacity: 1;
   transform: none;
 }
 
 /* Per-unit stagger: words resolve out of blur, chars type themselves in. */
 .split .u { display: inline-block; }
-.js .split .u {
+[data-js] .split .u {
   opacity: 0;
   filter: blur(14px);
   transform: translateY(14px);
@@ -349,14 +349,14 @@ body {
     transform 620ms ease-out;
   transition-delay: calc(var(--i, 0) * var(--gap, 60ms) + var(--d, 0ms));
 }
-.js .split.in .u {
+[data-js] .split.in .u {
   opacity: 1;
   filter: blur(0);
   transform: none;
 }
 /* A filter left behind — even blur(0) — keeps text on a composited layer,
    where it renders softer than the rest of the page. */
-.js .split.settled .u {
+[data-js] .split.settled .u {
   filter: none;
 }
 
@@ -610,4 +610,203 @@ body {
     rgba(255, 255, 255, 0.18) 0 5px,
     transparent 5px 22px
   );
+}
+
+/* ─── Route transitions ──────────────────────────────────── */
+/* The router navigates inside document.startViewTransition, so the outgoing
+   page can leave while the incoming one arrives instead of being swapped in a
+   single frame. The bar is captured as its own group so it holds still. */
+.nav-shell {
+  view-transition-name: keryx-nav;
+}
+@keyframes keryx-vt-out {
+  to { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes keryx-vt-in {
+  from { opacity: 0; transform: translateY(16px); }
+}
+::view-transition-old(root) {
+  animation: keryx-vt-out 170ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root) {
+  animation: keryx-vt-in 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  :root { --frame: 100%; }
+
+  .nav-bar {
+    /* The pill has no room to inset on a phone; only the chrome morphs. */
+    max-width: 100%;
+    padding-inline: 1.15rem;
+    height: calc(4.2rem - var(--nav-p) * 0.5rem);
+  }
+  .nav-shell { padding-inline: calc(var(--nav-p) * 0.6rem); }
+  .nav-offset { padding-top: 4.2rem; }
+
+  .step-row {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 0.9rem;
+    padding-bottom: 1.7rem;
+  }
+  .step-row::before { left: 10px; }
+  .step-mark { width: 21px; height: 21px; font-size: 0.6rem; }
+
+  .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-row > * { border-left: 0; border-top: 1px solid var(--color-border); }
+  .stat-row > *:nth-child(2n) { border-left: 1px solid var(--color-border); }
+  .stat-row > :first-child,
+  .stat-row > :nth-child(2) { border-top: 0; }
+
+  .section-title { margin-top: 2rem; }
+  .feed-row { padding: 0.7rem 0.9rem; font-size: 0.82rem; }
+  .data-table th,
+  .data-table td { padding: 0.7rem 0.85rem; }
+
+  /* The aurora is decoration; at phone size it costs more than it gives. */
+  .aurora::before,
+  .aurora::after { filter: blur(60px); opacity: 0.35; }
+}
+
+/* Wide data never squeezes: the table scrolls inside its own card. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Docs ───────────────────────────────────────────────── */
+.docs-layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+.docs-side {
+  position: sticky;
+  top: 6.5rem;
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  border-left: 1px solid var(--color-border);
+}
+.docs-side a {
+  display: block;
+  padding: 0.4rem 0 0.4rem 1rem;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  font-size: 0.85rem;
+  color: var(--color-text-faint);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.docs-side a:hover { color: var(--color-text-dim); }
+.docs-side a.active {
+  color: var(--color-cream);
+  border-left-color: var(--color-cream);
+}
+.docs-side .group {
+  padding: 1.15rem 0 0.35rem 1rem;
+}
+
+.prose h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+  scroll-margin-top: 7rem;
+}
+.prose h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 2rem 0 0.7rem;
+}
+.prose p,
+.prose li {
+  color: var(--color-text-dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.prose p { margin: 0 0 1rem; }
+.prose ul { margin: 0 0 1.2rem; padding-left: 1.1rem; }
+.prose li { margin-bottom: 0.4rem; }
+.prose strong { color: var(--color-text); font-weight: 600; }
+.prose a { color: var(--color-cream); text-decoration: none; border-bottom: 1px solid rgba(252, 235, 204, 0.3); }
+.prose a:hover { border-bottom-color: var(--color-cream); }
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 0.08em 0.36em;
+  color: var(--color-text);
+}
+.prose pre {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 10px;
+  padding: 1.05rem 1.2rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: #c9d1d9;
+  margin: 0 0 1.4rem;
+}
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+.doc-section { padding: 3.2rem 0; }
+.doc-section:first-child { padding-top: 0; }
+
+.figure {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  padding: 1.6rem 1.4rem 1.1rem;
+  margin: 0 0 1.6rem;
+  overflow-x: auto;
+}
+.figure figcaption {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: var(--color-text-faint);
+}
+
+.note {
+  border-left: 2px solid var(--color-cream);
+  background: rgba(252, 235, 204, 0.05);
+  border-radius: 0 8px 8px 0;
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1.4rem;
+}
+.note p { margin: 0; font-size: 0.9rem; }
+
+@media (max-width: 900px) {
+  .docs-layout { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .docs-side {
+    position: static;
+    max-height: none;
+    border-left: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+  .docs-side a { padding: 0.3rem 0.6rem; border-left: 0; border-radius: 999px; border: 1px solid var(--color-border); }
+  .docs-side a.active { border-color: var(--color-cream); }
+  .docs-side .group { display: none; }
 }

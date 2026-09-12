@@ -57,7 +57,7 @@ export default function Advertise() {
         )}
 
         {mine.length > 0 && (
-          <div className="card" style={{ overflow: "hidden" }}>
+          <div className="card table-scroll">
             <table className="data-table">
               <thead>
                 <tr>

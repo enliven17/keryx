@@ -4,12 +4,13 @@ import { ClaudeTui } from "@/components/ClaudeTui";
 import { Navbar } from "@/components/Navbar";
 import { HGutter, Reveal, SplitText, VGutter } from "@/components/motion";
 
-const FRAME: React.CSSProperties = { maxWidth: 1240, margin: "0 auto", padding: "0 1.75rem" };
+const FRAME: React.CSSProperties = { maxWidth: 1240, margin: "0 auto", padding: "0 clamp(1.15rem, 4vw, 1.75rem)" };
 
 const NAV_LINKS = [
   { href: "/onboarding", label: "For earners" },
   { href: "/advertise", label: "For advertisers" },
   { href: "/auction", label: "Live auction" },
+  { href: "/docs", label: "Docs" },
 ];
 
 const STEPS = [
@@ -74,7 +75,7 @@ export default function Landing() {
       />
 
       {/* ─── Hero ───────────────────────────────────────────── */}
-      <section style={{ position: "relative", overflow: "hidden", padding: "9rem 0 4rem" }}>
+      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(6.5rem, 14vw, 9rem) 0 clamp(2.5rem, 6vw, 4rem)" }}>
         <div className="aurora" aria-hidden />
         <div className="grid-veil" aria-hidden />
         <Rails />
@@ -139,7 +140,7 @@ export default function Landing() {
       <HGutter />
 
       {/* ─── How it works: the cross-chain path, as a path ──── */}
-      <section style={{ ...FRAME, paddingTop: "5.5rem", paddingBottom: "5.5rem" }}>
+      <section style={{ ...FRAME, paddingTop: "clamp(3.2rem, 8vw, 5.5rem)", paddingBottom: "clamp(3.2rem, 8vw, 5.5rem)" }}>
         <div className="how-grid">
           <div>
             <span className="eyebrow">How it works</span>
@@ -187,7 +188,7 @@ export default function Landing() {
       <HGutter />
 
       {/* ─── Proof ──────────────────────────────────────────── */}
-      <section style={{ ...FRAME, paddingTop: "5rem", paddingBottom: "5rem" }}>
+      <section style={{ ...FRAME, paddingTop: "clamp(3rem, 8vw, 5rem)", paddingBottom: "clamp(3rem, 8vw, 5rem)" }}>
         <span className="eyebrow">Proved on testnet</span>
         <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.9rem)", margin: "1.1rem 0 1.1rem", maxWidth: 720 }}>
           <SplitText text="One impression, end to end." />
@@ -230,7 +231,7 @@ export default function Landing() {
             <div key={v.t} style={{ position: "relative" }}>
               {i > 0 && <VGutter style={{ left: -13 }} />}
               <Reveal delay={i * 110}>
-                <div style={{ padding: "3rem 1.9rem" }}>
+                <div style={{ padding: "clamp(2rem, 5vw, 3rem) clamp(1.15rem, 4vw, 1.9rem)" }}>
                   <div style={{ width: 9, height: 9, borderRadius: "50%", background: v.c, marginBottom: 18 }} />
                   <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.28rem", fontWeight: 600, letterSpacing: "-0.025em" }}>{v.t}</h3>
                   <p style={{ margin: 0, color: "var(--color-text-dim)", fontSize: "0.92rem", lineHeight: 1.65 }}>{v.d}</p>
@@ -244,7 +245,7 @@ export default function Landing() {
       <HGutter />
 
       {/* ─── CTA ────────────────────────────────────────────── */}
-      <section style={{ position: "relative", overflow: "hidden", padding: "6rem 0", textAlign: "center" }}>
+      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(3.5rem, 9vw, 6rem) 0", textAlign: "center" }}>
         <div className="aurora" aria-hidden style={{ opacity: 0.5 }} />
         <Rails />
         <div style={{ ...FRAME, position: "relative", zIndex: 2 }}>

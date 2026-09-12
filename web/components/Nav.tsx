@@ -9,6 +9,7 @@ const links = [
   { href: "/advertise", label: "Advertise" },
   { href: "/auction", label: "Live auction" },
   { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/docs", label: "Docs" },
 ];
 
 export function Nav() {

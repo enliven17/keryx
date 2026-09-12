@@ -61,7 +61,7 @@ export function PageHeader({
   right?: ReactNode;
 }) {
   return (
-    <header style={{ paddingTop: "3.2rem", paddingBottom: "2.2rem" }}>
+    <header style={{ paddingTop: "clamp(2rem, 6vw, 3.2rem)", paddingBottom: "clamp(1.5rem, 4vw, 2.2rem)" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
         <div>
           <span className="eyebrow">{eyebrow}</span>
@@ -109,5 +109,5 @@ export function AdCreativeCard({ text, url, earning }: { text: string; url?: str
 }
 
 export function Section({ children, style }: { children: ReactNode; style?: React.CSSProperties }) {
-  return <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 1.5rem", ...style }}>{children}</div>;
+  return <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 clamp(1.15rem, 4vw, 1.5rem)", ...style }}>{children}</div>;
 }
