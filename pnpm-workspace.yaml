@@ -1,0 +1,10 @@
+packages:
+  - contracts
+  - extension
+  - server
+  - web
+  - cli
+  - packages/*
+
+onlyBuiltDependencies:
+  - esbuild
