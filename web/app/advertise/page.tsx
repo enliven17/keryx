@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { Nav } from "@/components/Nav";
-import { Section, ChainBadge } from "@/components/ui";
+import { Section, ChainBadge, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { fmtUsdc, perImpression, shortAddr } from "@/lib/format";
@@ -18,35 +18,55 @@ export default function Advertise() {
   return (
     <>
       <Nav />
-      <Section style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <h1 style={{ margin: 0 }}>Campaigns</h1>
-          <div style={{ flex: 1 }} />
-          <Link href="/advertise/new" className="btn btn-primary">+ New campaign</Link>
-        </div>
+      <Section style={{ paddingBottom: "4rem" }}>
+        <PageHeader
+          eyebrow="Advertisers"
+          title="Campaigns"
+          lead={
+            <>
+              The winning bid shows in every Claude Code spinner until it is outbid or runs out of
+              budget. You are charged for delivery a cross-chain proof can stand behind.
+            </>
+          }
+          right={
+            <Link href="/advertise/new" className="btn btn-primary">
+              New campaign
+            </Link>
+          }
+        />
 
         {!isConnected && (
-          <p style={{ color: "var(--color-text-dim)", marginTop: "1rem" }}>Connect your wallet to see your campaigns.</p>
+          <div className="card" style={{ padding: "2.5rem", textAlign: "center" }}>
+            <p style={{ color: "var(--color-text-dim)", margin: 0 }}>Connect your wallet to see your campaigns.</p>
+          </div>
         )}
 
         {isConnected && mine.length === 0 && (
-          <div className="card" style={{ padding: "2rem", marginTop: "1.25rem", textAlign: "center" }}>
-            <p style={{ color: "var(--color-text-dim)" }}>Reach developers where they wait. Create your first campaign.</p>
-            <Link href="/advertise/new" className="btn btn-primary">Create a campaign →</Link>
+          <div className="card" style={{ padding: "3rem 2rem", textAlign: "center" }}>
+            <h2 style={{ margin: "0 0 0.6rem", fontSize: "1.3rem", fontWeight: 600, letterSpacing: "-0.02em" }}>
+              Reach developers where they wait
+            </h2>
+            <p style={{ color: "var(--color-text-dim)", maxWidth: "44ch", margin: "0 auto 1.5rem", lineHeight: 1.6 }}>
+              Escrow USDC, commit a creative, and bid for the spinner slot. Nothing is charged until
+              an impression is proved.
+            </p>
+            <Link href="/advertise/new" className="btn btn-primary">
+              Create a campaign →
+            </Link>
           </div>
         )}
 
         {mine.length > 0 && (
-          <div className="card" style={{ marginTop: "1.25rem", overflow: "hidden" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
+          <div className="card" style={{ overflow: "hidden" }}>
+            <table className="data-table">
               <thead>
-                <tr style={{ textAlign: "left", color: "var(--color-text-dim)", fontSize: "0.78rem" }}>
-                  <th style={th}>Campaign</th>
-                  <th style={th}>Status</th>
-                  <th style={th}>Bid / block</th>
-                  <th style={th}>Per impression</th>
-                  <th style={th}>Remaining</th>
-                  <th style={th}>Chain</th>
+                <tr>
+                  <th>Campaign</th>
+                  <th>Status</th>
+                  <th>Bid / block</th>
+                  <th>Per impression</th>
+                  <th>Remaining</th>
+                  <th>Chain</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,18 +74,21 @@ export default function Advertise() {
                   const live = c.campaignId === winnerId;
                   const status = !c.active ? "Ended" : live ? "Live" : c.balance === "0" ? "Out of budget" : "Queued";
                   return (
-                    <tr key={c.campaignId} style={{ borderTop: "1px solid var(--color-border)" }}>
-                      <td style={td}>#{c.campaignId}</td>
-                      <td style={td}>
+                    <tr key={c.campaignId}>
+                      <td className="mono">#{c.campaignId}</td>
+                      <td>
                         <span className="pill" style={{ fontSize: "0.72rem" }}>
-                          <span className="dot" style={{ background: live ? "var(--color-earn)" : c.active ? "var(--color-warn)" : "var(--color-text-faint)" }} />
+                          <span
+                            className="dot"
+                            style={{ background: live ? "var(--color-earn)" : c.active ? "var(--color-warn)" : "var(--color-text-faint)" }}
+                          />
                           {status}
                         </span>
                       </td>
-                      <td style={{ ...td, fontFamily: "var(--font-mono)" }}>{fmtUsdc(c.pricePerBlock, { decimals: 4 })}</td>
-                      <td style={{ ...td, fontFamily: "var(--font-mono)" }}>{perImpression(c.pricePerBlock)}</td>
-                      <td style={{ ...td, fontFamily: "var(--font-mono)" }}>{fmtUsdc(c.balance)}</td>
-                      <td style={td}><ChainBadge /></td>
+                      <td className="mono">{fmtUsdc(c.pricePerBlock, { decimals: 4 })}</td>
+                      <td className="mono" style={{ color: "var(--color-text-dim)" }}>{perImpression(c.pricePerBlock)}</td>
+                      <td className="mono">{fmtUsdc(c.balance)}</td>
+                      <td><ChainBadge /></td>
                     </tr>
                   );
                 })}
@@ -75,12 +98,10 @@ export default function Advertise() {
         )}
 
         <p style={{ marginTop: "1.5rem", fontSize: "0.8rem", color: "var(--color-text-faint)" }}>
-          Advertiser {isConnected ? shortAddr(address) : "—"} · the winning bid shows in every Claude Code spinner until outbid or out of budget.
+          Advertiser {isConnected ? shortAddr(address) : "—"}
         </p>
       </Section>
     </>
   );
 }
 
-const th: React.CSSProperties = { padding: "0.75rem 1rem", fontWeight: 600 };
-const td: React.CSSProperties = { padding: "0.75rem 1rem" };

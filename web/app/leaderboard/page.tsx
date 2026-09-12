@@ -1,7 +1,7 @@
 "use client";
 
 import { Nav } from "@/components/Nav";
-import { Section, ChainBadge } from "@/components/ui";
+import { Section, Stat, StatRow, ChainBadge, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { shortAddr } from "@/lib/format";
@@ -31,38 +31,39 @@ export default function Leaderboard() {
   return (
     <>
       <Nav />
-      <Section style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <h1 style={{ margin: 0 }}>Leaderboard</h1>
-          <ChainBadge />
-        </div>
+      <Section style={{ paddingBottom: "4rem" }}>
+        <PageHeader
+          eyebrow="Settled delivery"
+          title="Leaderboard"
+          right={<ChainBadge />}
+          lead="Ranked from proved receipts only. A click counts as fifty impression-equivalents, the same weighting the settlement contract uses."
+        />
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1rem", marginTop: "1.25rem" }}>
-          {[
-            { label: "Settled receipts", value: receipts.length },
-            { label: "Impression-equivalents", value: totalUnits.toLocaleString() },
-            { label: "Verified earners", value: byEarner.size },
-          ].map((s) => (
-            <div key={s.label} className="card" style={{ padding: "1rem 1.1rem" }}>
-              <div style={{ fontSize: "0.78rem", color: "var(--color-text-dim)", fontWeight: 600 }}>{s.label}</div>
-              <div className="mono" style={{ fontSize: "1.6rem", fontWeight: 700 }}>{s.value}</div>
-            </div>
-          ))}
-        </div>
+        <StatRow>
+          <Stat label="Settled receipts" value={receipts.length} />
+          <Stat label="Impression-equivalents" value={totalUnits.toLocaleString()} />
+          <Stat label="Verified earners" value={byEarner.size} accent="var(--color-earn)" />
+        </StatRow>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginTop: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem", marginTop: "0.5rem" }}>
           <div>
-            <h2 style={{ fontSize: "1.1rem" }}>Top earners</h2>
-            <div className="card" style={{ overflow: "hidden" }}>
+            <h2 className="section-title">Top earners</h2>
+            <div className="card feed" style={{ overflow: "hidden" }}>
               {earners.length === 0 && <Empty label="No settled earnings yet." />}
               {earners.map(([addr, v], i) => (
-                <Row key={addr} i={i} left={shortAddr(addr)} right={`${v.units.toLocaleString()} units`} sub={`${v.impressions} impr · ${v.clicks} clicks`} />
+                <Row
+                  key={addr}
+                  i={i}
+                  left={shortAddr(addr)}
+                  right={`${v.units.toLocaleString()} units`}
+                  sub={`${v.impressions} impr · ${v.clicks} clicks`}
+                />
               ))}
             </div>
           </div>
           <div>
-            <h2 style={{ fontSize: "1.1rem" }}>Top campaigns</h2>
-            <div className="card" style={{ overflow: "hidden" }}>
+            <h2 className="section-title">Top campaigns</h2>
+            <div className="card feed" style={{ overflow: "hidden" }}>
               {campaigns.length === 0 && <Empty label="No campaign delivery yet." />}
               {campaigns.map(([id, units], i) => (
                 <Row key={id} i={i} left={`Campaign #${id}`} right={`${units.toLocaleString()} units`} />
@@ -77,9 +78,9 @@ export default function Leaderboard() {
 
 function Row({ i, left, right, sub }: { i: number; left: string; right: string; sub?: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.65rem 1rem", borderTop: i ? "1px solid var(--color-border)" : "none" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span className="mono" style={{ color: "var(--color-text-faint)", width: 20 }}>{i + 1}</span>
+    <div className="feed-row">
+      <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <span className="mono" style={{ color: "var(--color-text-faint)", width: 18, fontSize: "0.78rem" }}>{i + 1}</span>
         <div>
           <div className="mono" style={{ fontSize: "0.88rem" }}>{left}</div>
           {sub && <div style={{ fontSize: "0.72rem", color: "var(--color-text-faint)" }}>{sub}</div>}
@@ -91,5 +92,5 @@ function Row({ i, left, right, sub }: { i: number; left: string; right: string; 
 }
 
 function Empty({ label }: { label: string }) {
-  return <div style={{ padding: "1.25rem", color: "var(--color-text-faint)", fontSize: "0.9rem" }}>{label}</div>;
+  return <div style={{ padding: "1.4rem 1.15rem", color: "var(--color-text-faint)", fontSize: "0.9rem" }}>{label}</div>;
 }

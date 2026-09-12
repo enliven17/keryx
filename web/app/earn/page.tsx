@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createWalletClient, createPublicClient, http, type Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { Nav } from "@/components/Nav";
-import { Section, Stat, ChainBadge, AdCreativeCard } from "@/components/ui";
+import { Section, Stat, StatRow, ChainBadge, AdCreativeCard, PageHeader } from "@/components/ui";
 import { useDeployment, usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { fmtUsdc, shortAddr } from "@/lib/format";
@@ -90,60 +90,92 @@ export default function Earn() {
   return (
     <>
       <Nav />
-      <Section style={{ paddingTop: "2rem", paddingBottom: "3rem" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "0.75rem" }}>
-          <h1 style={{ margin: 0 }}>Earn</h1>
-          <span className="pill mono" style={{ fontSize: "0.72rem" }}>
-            <span className="dot" style={{ background: "var(--color-earn)" }} /> agent {shortAddr(agent.address)}
-          </span>
-          <ChainBadge />
-        </div>
+      <Section style={{ paddingBottom: "4rem" }}>
+        <PageHeader
+          eyebrow="Your wallet"
+          title="Earn"
+          right={
+            <>
+              <span className="pill mono" style={{ fontSize: "0.72rem" }}>
+                <span className="dot" style={{ background: "var(--color-earn)" }} /> {shortAddr(agent.address)}
+              </span>
+              <ChainBadge />
+            </>
+          }
+        />
 
-        {/* hero balance */}
-        <div className="card" style={{ padding: "2rem", marginTop: "1.25rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        {/* The balance is the page. Everything else explains it. */}
+        <div
+          className="card"
+          style={{
+            padding: "2.2rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1.5rem",
+            flexWrap: "wrap",
+            background: "linear-gradient(180deg, rgba(52,211,153,0.07), transparent 70%), var(--color-surface)",
+          }}
+        >
           <div>
-            <div style={{ fontSize: "0.85rem", color: "var(--color-text-dim)", fontWeight: 600 }}>Claimable USDC · earning now</div>
-            <div className="mono" style={{ fontSize: "3rem", fontWeight: 700, color: "var(--color-earn)", lineHeight: 1.1 }}>
+            <span className="eyebrow">Claimable USDC</span>
+            <div
+              className="mono"
+              style={{ fontSize: "clamp(2.4rem, 6vw, 3.4rem)", fontWeight: 600, color: "var(--color-earn)", lineHeight: 1.05, letterSpacing: "-0.03em", marginTop: 8 }}
+            >
               {fmtUsdc(accrued, { decimals: 4 })}
             </div>
-            <div style={{ fontSize: "0.8rem", color: "var(--color-text-faint)" }}>settles on Creditcoin · 50% revenue share</div>
+            <div style={{ fontSize: "0.8rem", color: "var(--color-text-faint)", marginTop: 6 }}>
+              50% revenue share · settles on Creditcoin
+            </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <button className="btn btn-earn" disabled={claiming || accrued === 0n || viewOnly} onClick={claim} style={{ fontSize: "1rem", padding: "0.75rem 1.5rem" }}>
-              {viewOnly ? "View only" : claiming ? "Claiming…" : accrued === 0n ? "Nothing to claim" : "Claim USDC"}
-            </button>
-          </div>
+          <button
+            className="btn btn-earn"
+            disabled={claiming || accrued === 0n || viewOnly}
+            onClick={claim}
+            style={{ fontSize: "1rem", padding: "0.8rem 1.6rem" }}
+          >
+            {viewOnly ? "View only" : claiming ? "Claiming…" : accrued === 0n ? "Nothing to claim" : "Claim USDC"}
+          </button>
         </div>
 
-        {/* stat row */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "1rem", marginTop: "1rem" }}>
-          <Stat label="Impressions" value={impressions} />
-          <Stat label="Clicks" value={clicks} />
-          <Stat label="Claimable" value={fmtUsdc(accrued, { decimals: 2 })} accent="var(--color-earn)" />
-          <Stat label="Surfaces" value="Claude Code" sub="spinner overlay" />
+        <div style={{ marginTop: "1rem" }}>
+          <StatRow>
+            <Stat label="Impressions" value={impressions} />
+            <Stat label="Clicks" value={clicks} />
+            <Stat label="Claimable" value={fmtUsdc(accrued, { decimals: 2 })} accent="var(--color-earn)" />
+            <Stat label="Surface" value="Claude Code" sub="spinner overlay" />
+          </StatRow>
         </div>
 
-        {/* live activity */}
-        <h2 style={{ fontSize: "1.2rem", marginTop: "2rem" }}>Live activity</h2>
-        <div className="card" style={{ padding: "0.5rem 0", marginTop: "0.5rem" }}>
+        <h2 className="section-title">Live activity</h2>
+        <div className="card feed" style={{ overflow: "hidden" }}>
           {myEvents.length === 0 && (
-            <div style={{ padding: "1.25rem", color: "var(--color-text-faint)", fontSize: "0.9rem" }}>
-              Start your agent and watch this climb. Each viewable impression in the Claude Code spinner earns USDC.
+            <div style={{ padding: "1.4rem 1.15rem", color: "var(--color-text-faint)", fontSize: "0.9rem" }}>
+              Start your agent and watch this climb. Every viewable impression in the spinner earns USDC.
             </div>
           )}
           {myEvents.slice(0, 12).map((e, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "0.55rem 1.1rem", borderTop: i ? "1px solid var(--color-border)" : "none", fontSize: "0.85rem" }}>
-              <span>
-                <span style={{ color: e.type === "click" ? "var(--color-spend)" : "var(--color-earn)", fontWeight: 600 }}>{e.type}</span>
-                <span style={{ color: "var(--color-text-faint)" }}> · {e.surface ?? "spinner"} · campaign {e.campaign_id}</span>
+            <div key={i} className="feed-row">
+              <span style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                <span
+                  className="dot"
+                  style={{ background: e.type === "click" ? "var(--color-spend)" : "var(--color-earn)", flexShrink: 0 }}
+                />
+                <span style={{ fontWeight: 600 }}>{e.type}</span>
+                <span style={{ color: "var(--color-text-faint)", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {e.surface ?? "spinner"} · campaign {e.campaign_id}
+                </span>
               </span>
-              <span className="mono" style={{ color: "var(--color-text-faint)" }}>{new Date(e.created_at).toLocaleTimeString()}</span>
+              <span className="mono" style={{ color: "var(--color-text-faint)", flexShrink: 0 }}>
+                {new Date(e.created_at).toLocaleTimeString()}
+              </span>
             </div>
           ))}
         </div>
 
-        <h2 style={{ fontSize: "1.2rem", marginTop: "2rem" }}>What developers see</h2>
-        <div style={{ marginTop: "0.5rem", maxWidth: 480 }}>
+        <h2 className="section-title">What developers see</h2>
+        <div style={{ maxWidth: 480 }}>
           <AdCreativeCard text="Deploy this in 30s — vercel.com/new" earning={fmtUsdc(accrued, { decimals: 4 })} />
         </div>
       </Section>

@@ -1,61 +1,30 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Logo } from "./ui";
+import { Navbar } from "./Navbar";
 import { WalletButton } from "./WalletButton";
 import { BalancePill } from "./BalancePill";
 
 const links = [
   { href: "/earn", label: "Earn" },
   { href: "/advertise", label: "Advertise" },
-  { href: "/auction", label: "Live Auction" },
+  { href: "/auction", label: "Live auction" },
   { href: "/leaderboard", label: "Leaderboard" },
 ];
 
 export function Nav() {
-  const path = usePathname();
   return (
-    <nav
-      style={{
-        borderBottom: "1px solid var(--color-border)",
-        background: "rgba(0,0,0,0.72)",
-        backdropFilter: "blur(14px) saturate(1.4)",
-        position: "sticky",
-        top: 0,
-        zIndex: 30,
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0.75rem 1.5rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "1.5rem",
-        }}
-      >
-        <Logo />
-        <div style={{ display: "flex", gap: "1.25rem", flex: 1 }}>
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              style={{
-                textDecoration: "none",
-                fontSize: "0.9rem",
-                fontWeight: path.startsWith(l.href) ? 700 : 500,
-                color: path.startsWith(l.href) ? "var(--color-text)" : "var(--color-text-dim)",
-              }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-        <BalancePill />
-        <WalletButton />
-      </div>
-    </nav>
+    <>
+      <Navbar
+        links={links}
+        right={
+          <>
+            <BalancePill />
+            <WalletButton />
+          </>
+        }
+      />
+      {/* The bar is fixed, so the page owes it its height. */}
+      <div className="nav-offset" aria-hidden />
+    </>
   );
 }

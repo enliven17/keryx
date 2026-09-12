@@ -23,13 +23,60 @@ export function ChainBadge({ chain = "Creditcoin" }: { chain?: "Creditcoin" | "K
 
 export function Stat({ label, value, sub, accent }: { label: string; value: ReactNode; sub?: ReactNode; accent?: string }) {
   return (
-    <div className="card" style={{ padding: "1rem 1.1rem" }}>
-      <div style={{ fontSize: "0.78rem", color: "var(--color-text-dim)", fontWeight: 600 }}>{label}</div>
-      <div className="mono" style={{ fontSize: "1.6rem", fontWeight: 700, marginTop: 4, color: accent ?? "var(--color-text)" }}>
+    <div style={{ padding: "1.15rem 1.3rem" }}>
+      <div className="eyebrow">{label}</div>
+      <div
+        className="mono"
+        style={{ fontSize: "1.7rem", fontWeight: 600, marginTop: 8, letterSpacing: "-0.02em", color: accent ?? "var(--color-text)" }}
+      >
         {value}
       </div>
-      {sub && <div style={{ fontSize: "0.78rem", color: "var(--color-text-faint)", marginTop: 2 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: "0.78rem", color: "var(--color-text-faint)", marginTop: 3 }}>{sub}</div>}
     </div>
+  );
+}
+
+/** Stats sitting in one framed row, divided by hairlines rather than boxed separately. */
+export function StatRow({ children }: { children: ReactNode }) {
+  return (
+    <div className="card stat-row" style={{ overflow: "hidden" }}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The heading every dashboard page opens on: a micro-label, a display title,
+ * one line of orientation, and whatever status belongs on the right.
+ */
+export function PageHeader({
+  eyebrow,
+  title,
+  lead,
+  right,
+}: {
+  eyebrow: string;
+  title: string;
+  lead?: ReactNode;
+  right?: ReactNode;
+}) {
+  return (
+    <header style={{ paddingTop: "3.2rem", paddingBottom: "2.2rem" }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
+        <div>
+          <span className="eyebrow">{eyebrow}</span>
+          <h1 className="display" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", marginTop: "0.85rem" }}>
+            {title}
+          </h1>
+        </div>
+        {right && <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>{right}</div>}
+      </div>
+      {lead && (
+        <p style={{ color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: 1.6, margin: "1.1rem 0 0", maxWidth: "64ch" }}>
+          {lead}
+        </p>
+      )}
+    </header>
   );
 }
 

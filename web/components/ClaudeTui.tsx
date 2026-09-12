@@ -69,7 +69,7 @@ export function ClaudeTui() {
           <span style={{ color: "#3fb950" }}>&gt;</span> refactor the auth handler in agent.ts
         </div>
         <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-          <span style={{ color: "#5b8cff" }}>●</span>
+          <span style={{ color: "#8b949e" }}>●</span>
           <span>I&apos;ll switch the handler to hono&apos;s <span style={{ color: "#79c0ff" }}>Request</span> type and tidy the imports.</span>
         </div>
         <div style={{ marginTop: 6, marginLeft: 18, color: "#6e7681" }}>
@@ -137,11 +137,11 @@ export function ClaudeTui() {
       </div>
 
       {/* status line */}
-      <div style={{ background: "#5b8cff", color: "#fff", fontSize: "0.7rem", padding: "5px 14px", display: "flex", justifyContent: "space-between" }}>
+      <div style={{ background: "#161b22", color: "#8b949e", fontSize: "0.7rem", padding: "5px 14px", display: "flex", justifyContent: "space-between", borderTop: "1px solid #21262d" }}>
         <span>⎇ main · 0 errors</span>
         <span style={{ display: "flex", gap: 14 }}>
-          <span className="mono" style={{ color: "#d6ffe2" }}>+${today.toFixed(2)} today</span>
-          <span>✦ Keryx · earning</span>
+          <span className="mono" style={{ color: "#6ee7b7" }}>+${today.toFixed(2)} today</span>
+          <span style={{ color: "#fcebcc" }}>✦ Keryx · earning</span>
         </span>
       </div>
     </div>

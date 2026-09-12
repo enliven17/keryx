@@ -6,7 +6,7 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { getWalletClient } from "wagmi/actions";
 import { keccak256, toBytes, parseUnits, createPublicClient, http, type Address } from "viem";
 import { Nav } from "@/components/Nav";
-import { Section, AdCreativeCard, ChainBadge } from "@/components/ui";
+import { Section, AdCreativeCard, ChainBadge, PageHeader } from "@/components/ui";
 import { useDeployment } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { useToast } from "@/components/Toaster";
@@ -185,11 +185,14 @@ export default function NewCampaign() {
           onClose={closeStepper}
         />
       )}
-      <Section style={{ paddingTop: "2rem", paddingBottom: "3rem", maxWidth: 760 }}>
-        <h1 style={{ margin: 0 }}>Create campaign</h1>
-        <p style={{ color: "var(--color-text-dim)" }}>Bid in the on-chain auction; fund in USDC on Creditcoin. Clicks bill at 50× an impression.</p>
+      <Section style={{ paddingBottom: "4rem", maxWidth: 780 }}>
+        <PageHeader
+          eyebrow="New campaign"
+          title="Create campaign"
+          lead="Bid in the on-chain auction and fund in USDC on Creditcoin. A click bills at fifty impressions, and nothing is charged until the impression is proved."
+        />
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", marginTop: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem" }}>
           {/* form */}
           <div>
             <label className="label">Ad text (max 120)</label>

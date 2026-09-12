@@ -94,7 +94,11 @@ export function SplitText({
       className={`split ${inView ? "in" : ""} ${settled ? "settled" : ""} ${className}`.trim()}
       style={{ "--gap": `${step}ms`, "--d": `${delay}ms`, ...style } as React.CSSProperties}
     >
-      {words.map((word, w) => (
+      {words.flatMap((word, w) => [
+        // The space is a real text node *between* wrappers. Inside one it would
+        // be a trailing space in an inline-block and get trimmed away, which
+        // runs the words together.
+        ...(w > 0 ? [<span key={`s${w}`}> </span>] : []),
         <span key={w} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
           {by === "char" ? (
             word.split("").map((ch, c) => (
@@ -107,9 +111,8 @@ export function SplitText({
               {word}
             </span>
           )}
-          {w < words.length - 1 ? " " : null}
-        </span>
-      ))}
+        </span>,
+      ])}
     </span>
   );
 }
