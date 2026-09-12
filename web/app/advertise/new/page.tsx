@@ -12,7 +12,7 @@ import { adServer } from "@/lib/server";
 import { useToast } from "@/components/Toaster";
 import { TxStepper, emptyStep, type TxStep } from "@/components/TxStepper";
 import { CampaignEscrowAbi, AuctionHouseAbi, MockUSDCAbi } from "@/lib/abis";
-import { wagmiConfig } from "@/lib/wagmi";
+import { activeWagmiConfig } from "@/lib/wagmi";
 import { anvil, creditcoinTestnet } from "@/lib/chains";
 
 function humanize(e: unknown): string {
@@ -104,7 +104,7 @@ export default function NewCampaign() {
         t.update(sid, { type: "success", title: `On ${chain.name}` });
       }
 
-      const walletClient = await getWalletClient(wagmiConfig, { chainId: targetChainId });
+      const walletClient = await getWalletClient(activeWagmiConfig, { chainId: targetChainId });
       if (!walletClient) throw new Error(`Wallet not available on ${chain.name}. Add the network or use a dev wallet.`);
       const pub = createPublicClient({ chain, transport: http(deployment.rpcUrl) });
 
