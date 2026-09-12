@@ -1,0 +1,59 @@
+{
+  "name": "keryx",
+  "displayName": "Keryx",
+  "publisher": "keryx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Show sponsored messages in the Claude Code spinner and anchor engagement on Creditcoin.",
+  "engines": { "vscode": "^1.80.0" },
+  "main": "./dist/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      { "command": "keryx.connect", "title": "Keryx: Connect agent" },
+      { "command": "keryx.signOut", "title": "Keryx: Disconnect" },
+      { "command": "keryx.restore", "title": "Keryx: Restore Claude Code" },
+      { "command": "keryx.status", "title": "Keryx: Show status" },
+      { "command": "keryx.claim", "title": "Keryx: Claim earnings" },
+      { "command": "keryx.diagnose", "title": "Keryx: Diagnose" },
+      { "command": "keryx.refresh", "title": "Keryx: Refresh" }
+    ],
+    "configuration": {
+      "title": "Keryx",
+      "properties": {
+        "keryx.serverBase": {
+          "type": "string",
+          "default": "http://localhost:4021",
+          "description": "Keryx ad-server base URL."
+        },
+        "keryx.webUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "description": "Keryx web app URL."
+        },
+        "keryx.creditcoinChainId": {
+          "type": "number",
+          "default": 102031,
+          "description": "Creditcoin chain ID used by the Keryx deployment."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "package": "vsce package --no-dependencies -o keryx.vsix"
+  },
+  "dependencies": {
+    "viem": "^2.21.55"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "1.80.0",
+    "@vscode/vsce": "^2.31.0",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.0.5"
+  }
+}
