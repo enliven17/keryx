@@ -429,11 +429,21 @@ nonce=<uuid>`}</code>
                 restores it byte for byte on uninstall.
               </p>
               <h3>CLI</h3>
-              <p>A standalone status-line daemon for people who run Claude Code in a terminal.</p>
+              <p>
+                A status-surface daemon for people who run Claude Code in a terminal. Pass the key
+                from the onboarding page explicitly: without <code>--key</code> the client generates
+                its own, and the earnings accrue to an address you are not watching.
+              </p>
               <pre>
-                <code>{`keryx setup --server http://localhost:4021
-keryx start`}</code>
+                <code>{`cd keryx && pnpm install
+node cli/bin/keryx.mjs setup --server <api url> --key 0x<your earner key>`}</code>
               </pre>
+              <p>
+                Then open a new Claude Code session: the sponsored line replaces the thinking verb,
+                which is read once at session start.{" "}
+                <code>node cli/bin/keryx.mjs status</code> shows what has accrued, and{" "}
+                <code>node cli/bin/keryx.mjs uninstall</code> restores the previous settings.
+              </p>
             </section>
 
             <section id="addresses" className="doc-section">

@@ -213,3 +213,20 @@ test("the docs sidebar follows the reader down the page", async ({ page, isMobil
   expect(await viewportTop()).toBeGreaterThan(0);
   await expect(page.locator(".docs-side").getByRole("link", { name: "Limits and caveats" })).toBeVisible();
 });
+
+test("onboarding hands you a command wired to this deployment and your key", async ({ page }) => {
+  await page.goto("/onboarding", { waitUntil: "domcontentloaded" });
+  await waitForHydration(page);
+
+  await page.getByRole("button", { name: "Create local key" }).click();
+
+  // The key the page generated must be the one the command passes: without
+  // --key the client makes its own and earnings land on an unwatched address.
+  const key = await page.locator("code").first().innerText();
+  expect(key).toMatch(/^0x[0-9a-f]{64}$/i);
+
+  const command = page.locator("pre").last();
+  await expect(command).toContainText("keryx.mjs setup");
+  await expect(command).toContainText(key);
+  await expect(command).toContainText("--server");
+});
