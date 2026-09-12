@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Reveal } from "@/components/motion";
 import Link from "next/link";
 import { createWalletClient, createPublicClient, http, type Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -105,6 +106,7 @@ export default function Earn() {
         />
 
         {/* The balance is the page. Everything else explains it. */}
+        <Reveal delay={60}>
         <div
           className="card"
           style={{
@@ -138,7 +140,9 @@ export default function Earn() {
             {viewOnly ? "View only" : claiming ? "Claiming…" : accrued === 0n ? "Nothing to claim" : "Claim USDC"}
           </button>
         </div>
+        </Reveal>
 
+        <Reveal delay={140}>
         <div style={{ marginTop: "1rem" }}>
           <StatRow>
             <Stat label="Impressions" value={impressions} />
@@ -147,7 +151,9 @@ export default function Earn() {
             <Stat label="Surface" value="Claude Code" sub="spinner overlay" />
           </StatRow>
         </div>
+        </Reveal>
 
+        <Reveal delay={200}>
         <h2 className="section-title">Live activity</h2>
         <div className="card feed" style={{ overflow: "hidden" }}>
           {myEvents.length === 0 && (
@@ -174,10 +180,14 @@ export default function Earn() {
           ))}
         </div>
 
+        </Reveal>
+
+        <Reveal delay={260}>
         <h2 className="section-title">What developers see</h2>
         <div style={{ maxWidth: 480 }}>
-          <AdCreativeCard text="Deploy this in 30s — vercel.com/new" earning={fmtUsdc(accrued, { decimals: 4 })} />
+          <AdCreativeCard text="Deploy this in 30s · vercel.com/new" earning={fmtUsdc(accrued, { decimals: 4 })} />
         </div>
+        </Reveal>
       </Section>
     </>
   );

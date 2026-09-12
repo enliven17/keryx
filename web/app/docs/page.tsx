@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Reveal } from "@/components/motion";
 import { Nav } from "@/components/Nav";
 import { Section, PageHeader } from "@/components/ui";
 import { DocsNav, type DocLink } from "@/components/DocsNav";
@@ -38,8 +39,11 @@ export default function Docs() {
         />
 
         <div className="docs-layout">
-          <DocsNav links={LINKS} />
+          <Reveal>
+            <DocsNav links={LINKS} />
+          </Reveal>
 
+          <Reveal delay={110}>
           <article className="prose">
             <section id="overview" className="doc-section">
               <h2>Overview</h2>
@@ -51,9 +55,9 @@ export default function Docs() {
               </p>
               <p>
                 The hard part is not showing an ad, it is proving one was shown. Ad networks settle
-                on numbers their own server reports. Keryx cannot: the contract that moves money
+                on numbers their own server reports. Keryx cannot. The contract that moves money
                 lives on Creditcoin and will not release a cent until a proof of the impression
-                receipt verifies on-chain. The server can lie all it likes — the escrow does not
+                receipt verifies on-chain. The server can lie all it likes; the escrow does not
                 listen to it.
               </p>
               <ul>
@@ -66,7 +70,7 @@ export default function Docs() {
                   accrued USDC whenever they like.
                 </li>
                 <li>
-                  <strong>Nobody</strong> — including whoever runs the server — can move escrowed
+                  <strong>Nobody</strong>, including whoever runs the server, can move escrowed
                   funds without a verified receipt.
                 </li>
               </ul>
@@ -137,7 +141,7 @@ export default function Docs() {
               <p>
                 A single chain would be simpler, and it would also be worth less. If Keryx wrote the
                 impression directly on Creditcoin, the settlement contract would be trusting a
-                transaction that Keryx itself signed — the same trust an ad network asks for today,
+                transaction that Keryx itself signed: the same trust an ad network asks for today,
                 with extra steps.
               </p>
               <p>
@@ -167,7 +171,7 @@ export default function Docs() {
                 <code>createCampaign</code>, <code>fund</code>, <code>refund</code> and{" "}
                 <code>closeCampaign</code>. Controllers call <code>setBid</code>,{" "}
                 <code>charge</code> and <code>credit</code>. Earners call <code>claim</code> or{" "}
-                <code>claimAll</code> and receive USDC directly — there is no withdrawal approval
+                <code>claimAll</code> and receive USDC directly. There is no withdrawal approval
                 and no operator in the path.
               </p>
 
@@ -192,7 +196,7 @@ export default function Docs() {
               <p>
                 A deliberately small contract on the source chain: emit the engagement, gate on the
                 recorder, and refuse a duplicate receipt id. It holds no funds, so a compromise of
-                the recorder key produces junk events rather than stolen money — and those events
+                the recorder key produces junk events rather than stolen money, and those events
                 still have to match a funded campaign to charge anything.
               </p>
             </section>
@@ -233,21 +237,21 @@ treasury = cost - earner`}</code>
               </p>
               <ul>
                 <li>
-                  <code>keryx_creatives</code> — ad text, destination URL and the creative hash the
+                  <code>keryx_creatives</code>: ad text, destination URL and the creative hash the
                   advertiser committed on-chain.
                 </li>
                 <li>
-                  <code>keryx_usage</code> — per-earner daily units and the trial redemption ledger.
+                  <code>keryx_usage</code>: per-earner daily units and the trial redemption ledger.
                 </li>
                 <li>
-                  <code>keryx_pending</code> — accepted units not yet anchored on the source chain.
+                  <code>keryx_pending</code>: accepted units not yet anchored on the source chain.
                 </li>
                 <li>
-                  <code>keryx_receipts</code> — receipt id, source transaction and, once proved, the
+                  <code>keryx_receipts</code>: receipt id, source transaction and, once proved, the
                   Creditcoin transaction.
                 </li>
                 <li>
-                  <code>keryx_report_nonces</code> — spent nonces, so a signed report cannot be
+                  <code>keryx_report_nonces</code>: spent nonces, so a signed report cannot be
                   replayed.
                 </li>
               </ul>
@@ -356,34 +360,34 @@ DEPLOYER_PRIVATE_KEY=0x… SOURCE_ENGAGEMENT=0x… SOURCE_START_BLOCK=<block> \\
               </p>
               <ul>
                 <li>
-                  <code>GET /health</code> — network, chain id and the resolved contract addresses.
+                  <code>GET /health</code>: network, chain id and the resolved contract addresses.
                 </li>
                 <li>
-                  <code>GET /attestcoin</code> — source chain, chain key, prover URL and whether the
+                  <code>GET /attestcoin</code>: source chain, chain key, prover URL and whether the
                   worker has its keys.
                 </li>
                 <li>
-                  <code>GET /ad</code> — picks a live campaign weighted by bid and returns the
+                  <code>GET /ad</code>: picks a live campaign weighted by bid and returns the
                   creative to render.
                 </li>
                 <li>
-                  <code>POST /campaigns</code> — registers creative copy; rejected if it does not
+                  <code>POST /campaigns</code>: registers creative copy; rejected if it does not
                   match the on-chain creative hash.
                 </li>
                 <li>
-                  <code>POST /report</code> — a signed impression or click.
+                  <code>POST /report</code>: a signed impression or click.
                 </li>
                 <li>
-                  <code>GET /earnings/:address</code> — accrued balance read from the escrow.
+                  <code>GET /earnings/:address</code>: accrued balance read from the escrow.
                 </li>
                 <li>
-                  <code>GET /auction</code> — the full board plus the current winner.
+                  <code>GET /auction</code>: the full board plus the current winner.
                 </li>
                 <li>
-                  <code>GET /activity</code> — recent events and settled receipts.
+                  <code>GET /activity</code>: recent events and settled receipts.
                 </li>
                 <li>
-                  <code>POST /settle/flush</code> — anchors pending batches immediately instead of
+                  <code>POST /settle/flush</code>: anchors pending batches immediately instead of
                   waiting for the timer.
                 </li>
               </ul>
@@ -434,7 +438,7 @@ keryx start`}</code>
               </p>
               <ul>
                 <li>
-                  <strong>AttestcoinSettlement</strong> —{" "}
+                  <strong>AttestcoinSettlement</strong>:{" "}
                   <a
                     href="https://creditcoin-testnet.blockscout.com/address/0x42623b442fd0F3BC6796DA0a08a0074ba16f3209?tab=contract"
                     target="_blank"
@@ -444,7 +448,7 @@ keryx start`}</code>
                   </a>
                 </li>
                 <li>
-                  <strong>CampaignEscrow</strong> —{" "}
+                  <strong>CampaignEscrow</strong>:{" "}
                   <a
                     href="https://creditcoin-testnet.blockscout.com/address/0x342bB1e97d4EE97a5876f684829D86e6a8d74bb0?tab=contract"
                     target="_blank"
@@ -454,7 +458,7 @@ keryx start`}</code>
                   </a>
                 </li>
                 <li>
-                  <strong>AuctionHouse</strong> —{" "}
+                  <strong>AuctionHouse</strong>:{" "}
                   <a
                     href="https://creditcoin-testnet.blockscout.com/address/0x4e511285F7f0cD16A2e7960bB1D09772D4d36655?tab=contract"
                     target="_blank"
@@ -464,7 +468,7 @@ keryx start`}</code>
                   </a>
                 </li>
                 <li>
-                  <strong>SourceEngagement</strong> (Sepolia) —{" "}
+                  <strong>SourceEngagement</strong> (Sepolia):{" "}
                   <a
                     href="https://eth-sepolia.blockscout.com/address/0x5049168e6c5f7B0fa0D104ad669ab37c3a9Bc946?tab=contract"
                     target="_blank"
@@ -504,6 +508,7 @@ keryx start`}</code>
               </ul>
             </section>
           </article>
+          </Reveal>
         </div>
       </Section>
     </>

@@ -65,7 +65,7 @@ export function TxStepper({
         {activeStep ? (
           <p style={{ fontSize: "0.82rem", margin: "0 0 1.1rem" }}>
             <span style={{ color: "var(--color-brand)", fontWeight: 700 }}>
-              Step {current} of {steps.length} — {activeStep.title}
+              Step {current} of {steps.length} : {activeStep.title}
             </span>
             <span style={{ color: "var(--color-text-dim)" }}>
               {" · "}
@@ -79,7 +79,7 @@ export function TxStepper({
         ) : (
           <p style={{ fontSize: "0.82rem", color: "var(--color-text-dim)", margin: "0 0 1.1rem" }}>
             {allDone
-              ? "All set — your campaign is live."
+              ? "All set : your campaign is live."
               : hasError
                 ? "Something stopped the flow. You can close and retry."
                 : "Approve each step in your wallet. Here's exactly what you're signing and what's next."}

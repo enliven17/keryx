@@ -33,7 +33,7 @@ export default function NewCampaign() {
   const targetChainId = deployment?.chainId ?? 31338;
   const wrongNetwork = isConnected && !!chainId && chainId !== targetChainId;
 
-  const [text, setText] = useState("Deploy this in 30s — vercel.com/new");
+  const [text, setText] = useState("Deploy this in 30s · vercel.com/new");
   const [url, setUrl] = useState("https://vercel.com/new");
   const [pricePerBlock, setPricePerBlock] = useState("0.60"); // USDC per 1000 impressions
   const [budget, setBudget] = useState("100"); // USDC
@@ -202,7 +202,7 @@ export default function NewCampaign() {
             <label className="label">Destination URL</label>
             <input className="input" value={url} onChange={(e) => setUrl(e.target.value)} style={{ marginBottom: "1rem" }} />
 
-            <label className="label">Bid — price per block (1 block = 1,000 impressions), USDC</label>
+            <label className="label">Bid (price per block, 1 block = 1,000 impressions), USDC</label>
             <input className="input mono" value={pricePerBlock} onChange={(e) => setPricePerBlock(e.target.value)} style={{ marginBottom: "0.25rem" }} />
             <div style={{ fontSize: "0.72rem", color: "var(--color-text-faint)", marginBottom: "1rem" }}>
               ≈ ${perImpr} / impression · ${clickCost.toFixed(4)} / click (50×)
@@ -231,7 +231,7 @@ export default function NewCampaign() {
 
           {/* preview */}
           <div>
-            <label className="label">Live preview — Claude Code spinner</label>
+            <label className="label">Live preview (Claude Code spinner)</label>
             <AdCreativeCard text={text} url={url.replace(/^https?:\/\//, "")} earning="+$0.0006" />
             <div style={{ marginTop: "0.75rem", display: "flex", gap: 8, alignItems: "center" }}>
               <ChainBadge /> <span style={{ fontSize: "0.8rem", color: "var(--color-text-dim)" }}>settles on Creditcoin</span>

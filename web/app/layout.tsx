@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  title: "Keryx — get paid for waiting",
+  title: "Keryx · get paid for waiting",
   description:
     "Your AI coding agent is thinking. Now it's earning. Sponsored messages settle on-chain in USDC. One human, one earner.",
 };

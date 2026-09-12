@@ -1,6 +1,7 @@
 "use client";
 
 import { Nav } from "@/components/Nav";
+import { Reveal } from "@/components/motion";
 import { Section, Stat, StatRow, ChainBadge, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
@@ -39,14 +40,16 @@ export default function Leaderboard() {
           lead="Ranked from proved receipts only. A click counts as fifty impression-equivalents, the same weighting the settlement contract uses."
         />
 
+        <Reveal delay={70}>
         <StatRow>
           <Stat label="Settled receipts" value={receipts.length} />
           <Stat label="Impression-equivalents" value={totalUnits.toLocaleString()} />
           <Stat label="Verified earners" value={byEarner.size} accent="var(--color-earn)" />
         </StatRow>
+        </Reveal>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem", marginTop: "0.5rem" }}>
-          <div>
+          <Reveal delay={150}>
             <h2 className="section-title">Top earners</h2>
             <div className="card feed" style={{ overflow: "hidden" }}>
               {earners.length === 0 && <Empty label="No settled earnings yet." />}
@@ -60,8 +63,8 @@ export default function Leaderboard() {
                 />
               ))}
             </div>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal delay={230}>
             <h2 className="section-title">Top campaigns</h2>
             <div className="card feed" style={{ overflow: "hidden" }}>
               {campaigns.length === 0 && <Empty label="No campaign delivery yet." />}
@@ -69,7 +72,7 @@ export default function Leaderboard() {
                 <Row key={id} i={i} left={`Campaign #${id}`} right={`${units.toLocaleString()} units`} />
               ))}
             </div>
-          </div>
+          </Reveal>
         </div>
       </Section>
     </>

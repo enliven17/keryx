@@ -136,3 +136,150 @@ export function HGutter({ style }: { style?: React.CSSProperties }) {
     </div>
   );
 }
+
+const reducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Scroll-coupled reveal: the element resolves as it crosses the lower part of
+ * the viewport, tied to scroll position rather than to a fixed duration. Unlike
+ * `Reveal` it can be scrubbed back and forth, so the section assembles under the
+ * reader's own scrolling. Transform and opacity only, and no pin: the wheel
+ * keeps control of the page.
+ */
+export function Scrub({
+  children,
+  start = 0.94,
+  end = 0.58,
+  y = 44,
+  className = "",
+  style,
+}: {
+  children: ReactNode;
+  /** Viewport fraction where the element begins to resolve (1 = the very bottom). */
+  start?: number;
+  /** Viewport fraction where it is fully resolved. */
+  end?: number;
+  y?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (reducedMotion()) {
+      el.style.opacity = "1";
+      el.style.transform = "none";
+      return;
+    }
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const span = Math.max(1, (start - end) * vh);
+      const p = Math.min(1, Math.max(0, (start * vh - rect.top) / span));
+      el.style.opacity = String(p);
+      el.style.transform = p === 1 ? "none" : `translateY(${(1 - p) * y}px)`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [start, end, y]);
+
+  return (
+    <div ref={ref} className={`scrub ${className}`.trim()} style={style}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The words of a heading resolving out of blur as the reader scrolls through
+ * them, one after the next, rather than all at once on entry.
+ */
+export function ScrubText({
+  text,
+  start = 0.9,
+  end = 0.45,
+  className = "",
+  style,
+}: {
+  text: string;
+  start?: number;
+  end?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const words = text.split(" ");
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const units = [...host.querySelectorAll<HTMLElement>(".u")];
+    if (!units.length) return;
+
+    if (reducedMotion()) {
+      units.forEach((u) => {
+        u.style.opacity = "1";
+        u.style.filter = "none";
+        u.style.transform = "none";
+      });
+      return;
+    }
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rect = host.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const span = Math.max(1, (start - end) * vh);
+      const p = Math.min(1, Math.max(0, (start * vh - rect.top) / span));
+      // Each word owns a slice of the range, with the slices overlapping so the
+      // line reads as one sweep rather than a row of separate fades.
+      const slice = 1 / (units.length + 1);
+      units.forEach((u, i) => {
+        const local = Math.min(1, Math.max(0, (p - i * slice) / (slice * 2)));
+        u.style.opacity = String(local);
+        u.style.filter = local === 1 ? "none" : `blur(${(1 - local) * 12}px)`;
+        u.style.transform = local === 1 ? "none" : `translateY(${(1 - local) * 12}px)`;
+      });
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [start, end, text]);
+
+  return (
+    <span ref={ref} className={`scrub-text ${className}`.trim()} style={style}>
+      {words.flatMap((word, w) => [
+        ...(w > 0 ? [<span key={`s${w}`}> </span>] : []),
+        <span key={w} className="u" style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+          {word}
+        </span>,
+      ])}
+    </span>
+  );
+}

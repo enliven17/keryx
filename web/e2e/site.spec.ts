@@ -157,3 +157,57 @@ test("docs diagrams and sidebar are present", async ({ page }) => {
   await side.getByRole("link", { name: "Server API" }).click();
   await expect(page.getByRole("heading", { name: "Server API" })).toBeInViewport();
 });
+
+test("the how-it-works steps resolve as the page scrolls", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await waitForHydration(page);
+
+  const opacity = () =>
+    page.evaluate(() => {
+      const el = document.querySelectorAll<HTMLElement>(".scrub")[1];
+      return el ? Number(getComputedStyle(el).opacity) : -1;
+    });
+
+  // Below the fold it has not started; once scrolled past it is fully resolved.
+  expect(await opacity()).toBeLessThan(0.2);
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLElement>(".scrub")[1]?.scrollIntoView({ block: "center" });
+  });
+  await expect.poll(opacity, { timeout: 5_000 }).toBeGreaterThan(0.95);
+});
+
+test("the page rails run past the hero", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the rails sit at the viewport edge on a phone");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+
+  // A rail is decorative, so assert it is actually painted rather than merely present.
+  const painted = await page.evaluate(() => {
+    const rail = document.querySelector<HTMLElement>(".gutter-v .dash-v");
+    if (!rail) return null;
+    const r = rail.getBoundingClientRect();
+    return { height: r.height, visible: getComputedStyle(rail).visibility };
+  });
+  expect(painted?.visible).toBe("visible");
+  expect(painted?.height ?? 0).toBeGreaterThan(600);
+});
+
+test("the docs sidebar follows the reader down the page", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the sidebar is a chip row on a phone, not a rail");
+  await page.goto("/docs", { waitUntil: "domcontentloaded" });
+  await waitForHydration(page);
+
+  const side = page.locator(".docs-side");
+  const before = (await side.boundingBox())?.y ?? 0;
+
+  await page.evaluate(() => window.scrollTo(0, 1800));
+  await expect
+    .poll(async () => (await side.boundingBox())?.y ?? -1, { timeout: 5_000 })
+    .toBeGreaterThan(0);
+
+  const after = (await side.boundingBox())?.y ?? 0;
+  // It stuck rather than scrolling away: still on screen, near the top.
+  expect(after).toBeLessThanOrEqual(before);
+  expect(after).toBeGreaterThan(0);
+  await expect(side.getByRole("link", { name: "Limits and caveats" })).toBeVisible();
+});

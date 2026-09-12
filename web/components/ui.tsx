@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
+import { Reveal } from "./motion";
 
 export function Logo({ size = 20 }: { size?: number }) {
   return (
@@ -62,19 +63,23 @@ export function PageHeader({
 }) {
   return (
     <header style={{ paddingTop: "clamp(2rem, 6vw, 3.2rem)", paddingBottom: "clamp(1.5rem, 4vw, 2.2rem)" }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
-        <div>
-          <span className="eyebrow">{eyebrow}</span>
-          <h1 className="display" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", marginTop: "0.85rem" }}>
-            {title}
-          </h1>
+      <Reveal>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
+          <div>
+            <span className="eyebrow">{eyebrow}</span>
+            <h1 className="display" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", marginTop: "0.85rem" }}>
+              {title}
+            </h1>
+          </div>
+          {right && <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>{right}</div>}
         </div>
-        {right && <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>{right}</div>}
-      </div>
+      </Reveal>
       {lead && (
-        <p style={{ color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: 1.6, margin: "1.1rem 0 0", maxWidth: "64ch" }}>
-          {lead}
-        </p>
+        <Reveal delay={110}>
+          <p style={{ color: "var(--color-text-dim)", fontSize: "0.95rem", lineHeight: 1.6, margin: "1.1rem 0 0", maxWidth: "64ch" }}>
+            {lead}
+          </p>
+        </Reveal>
       )}
     </header>
   );

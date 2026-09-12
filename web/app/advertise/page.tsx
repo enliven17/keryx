@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import { useAccount } from "wagmi";
 import { Nav } from "@/components/Nav";
 import { Section, ChainBadge, PageHeader } from "@/components/ui";
@@ -35,6 +36,7 @@ export default function Advertise() {
           }
         />
 
+        <Reveal delay={80}>
         {!isConnected && (
           <div className="card" style={{ padding: "2.5rem", textAlign: "center" }}>
             <p style={{ color: "var(--color-text-dim)", margin: 0 }}>Connect your wallet to see your campaigns.</p>
@@ -97,8 +99,10 @@ export default function Advertise() {
           </div>
         )}
 
+        </Reveal>
+
         <p style={{ marginTop: "1.5rem", fontSize: "0.8rem", color: "var(--color-text-faint)" }}>
-          Advertiser {isConnected ? shortAddr(address) : "—"}
+          Advertiser {isConnected ? shortAddr(address) : "not connected"}
         </p>
       </Section>
     </>

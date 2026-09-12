@@ -1,6 +1,7 @@
 "use client";
 
 import { Nav } from "@/components/Nav";
+import { Reveal } from "@/components/motion";
 import { Section, ChainBadge, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
@@ -39,6 +40,7 @@ export default function AuctionPage() {
           }
         />
 
+        <Reveal delay={80}>
         <div className="card table-scroll">
           <table className="data-table">
             <thead>
@@ -84,6 +86,7 @@ export default function AuctionPage() {
             </tbody>
           </table>
         </div>
+        </Reveal>
       </Section>
     </>
   );

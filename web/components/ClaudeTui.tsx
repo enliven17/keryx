@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // the sponsored line, then earns — showing the whole mechanic in one loop.
 const VERBS = ["Pontificating", "Conjuring", "Reticulating", "Combobulating"];
 const SPIN = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-const AD = { text: "Postgres, but serverless — neon.tech", host: "neon.tech" };
+const AD = { text: "Postgres, but serverless · neon.tech", host: "neon.tech" };
 
 // 6 frames: 3 thinking verbs, then 3 holding the ad (so it lingers).
 const FRAMES = 6;
@@ -59,7 +59,7 @@ export function ClaudeTui() {
         <Dot c="#febc2e" />
         <Dot c="#28c840" />
         <span style={{ flex: 1, textAlign: "center", color: "#6e7681", fontSize: "0.72rem", marginRight: 28 }}>
-          claude — agent.ts
+          claude · agent.ts
         </span>
       </div>
 

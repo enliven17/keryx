@@ -34,11 +34,13 @@
 html {
   scroll-behavior: smooth;
 }
+/* Only the root paints the page colour. An opaque <body> background would sit
+   above the page-length rails, which render behind the content. */
+html { background: var(--color-bg); }
 html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -268,18 +270,6 @@ body {
   background: radial-gradient(circle, rgba(255, 255, 255, 0.07), transparent 68%);
   animation: keryx-drift 21s ease-in-out infinite reverse;
 }
-.grid-veil {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 62px 62px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 78%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 78%);
-}
 
 
 /* ─── Dashed gutter language (paired thin lines with an open gap) ── */
@@ -405,9 +395,9 @@ body {
   gap: 1.25rem;
   padding-bottom: 2.1rem;
 }
-.step-row:last-child { padding-bottom: 0; }
+.step-row-end { padding-bottom: 0; }
 /* The dashed spine connecting one step to the next. */
-.step-row:not(:last-child)::before {
+.step-row:not(.step-row-end)::before {
   content: "";
   position: absolute;
   left: 12px;
@@ -450,15 +440,13 @@ body {
 }
 
 /* ─── Morphing navbar: --nav-p scrubs 0 (at rest) → 1 (scrolled) ── */
-:root { --nav-p: 0; }
-
 .nav-shell {
   position: fixed;
   inset-inline: 0;
   top: 0;
   z-index: 50;
-  padding-top: calc(var(--nav-p) * 0.85rem);
-  padding-inline: calc(var(--nav-p) * 1rem);
+  padding-top: calc(var(--nav-p, 0) * 0.85rem);
+  padding-inline: calc(var(--nav-p, 0) * 1rem);
 }
 .nav-bar {
   margin-inline: auto;
@@ -466,25 +454,25 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  height: calc(4.8rem - var(--nav-p) * 0.95rem);
-  max-width: calc(1240px - var(--nav-p) * 18rem);
-  padding-inline: calc(1.75rem - var(--nav-p) * 0.35rem);
-  border-radius: calc(var(--nav-p) * 999px);
-  border: 1px solid rgba(255, 255, 255, calc(0.12 * var(--nav-p)));
-  background: rgba(11, 11, 13, calc(0.78 * var(--nav-p)));
-  box-shadow: 0 2px 30px rgba(0, 0, 0, calc(0.5 * var(--nav-p)));
-  backdrop-filter: blur(calc(var(--nav-p) * 16px)) saturate(1.3);
-  -webkit-backdrop-filter: blur(calc(var(--nav-p) * 16px)) saturate(1.3);
+  height: calc(4.8rem - var(--nav-p, 0) * 0.95rem);
+  max-width: calc(1240px - var(--nav-p, 0) * 18rem);
+  padding-inline: calc(1.75rem - var(--nav-p, 0) * 0.35rem);
+  border-radius: calc(var(--nav-p, 0) * 999px);
+  border: 1px solid rgba(255, 255, 255, calc(0.12 * var(--nav-p, 0)));
+  background: rgba(11, 11, 13, calc(0.78 * var(--nav-p, 0)));
+  box-shadow: 0 2px 30px rgba(0, 0, 0, calc(0.5 * var(--nav-p, 0)));
+  backdrop-filter: blur(calc(var(--nav-p, 0) * 16px)) saturate(1.3);
+  -webkit-backdrop-filter: blur(calc(var(--nav-p, 0) * 16px)) saturate(1.3);
   transition: none;
 }
 .nav-links {
   display: none;
   align-items: center;
-  gap: calc(2.1rem - var(--nav-p) * 0.6rem);
+  gap: calc(2.1rem - var(--nav-p, 0) * 0.6rem);
 }
 .nav-cta {
-  height: calc(2.6rem - var(--nav-p) * 0.2rem);
-  padding-inline: calc(1.25rem - var(--nav-p) * 0.1rem);
+  height: calc(2.6rem - var(--nav-p, 0) * 0.2rem);
+  padding-inline: calc(1.25rem - var(--nav-p, 0) * 0.1rem);
   border-radius: 999px;
 }
 .nav-burger {
@@ -646,9 +634,9 @@ body {
     /* The pill has no room to inset on a phone; only the chrome morphs. */
     max-width: 100%;
     padding-inline: 1.15rem;
-    height: calc(4.2rem - var(--nav-p) * 0.5rem);
+    height: calc(4.2rem - var(--nav-p, 0) * 0.5rem);
   }
-  .nav-shell { padding-inline: calc(var(--nav-p) * 0.6rem); }
+  .nav-shell { padding-inline: calc(var(--nav-p, 0) * 0.6rem); }
   .nav-offset { padding-top: 4.2rem; }
 
   .step-row {
@@ -686,7 +674,9 @@ body {
   display: grid;
   grid-template-columns: 232px minmax(0, 1fr);
   gap: 3.5rem;
-  align-items: start;
+  /* The sidebar's grid item must stretch to the article's height, or the sticky
+     nav inside it has no room to travel and simply scrolls away. */
+  align-items: stretch;
 }
 .docs-side {
   position: sticky;
@@ -809,4 +799,34 @@ body {
   .docs-side a { padding: 0.3rem 0.6rem; border-left: 0; border-radius: 999px; border: 1px solid var(--color-border); }
   .docs-side a.active { border-color: var(--color-cream); }
   .docs-side .group { display: none; }
+}
+
+/* Scrubbed reveals: hidden only once JS has proved it can reveal them. */
+[data-js] .scrub { opacity: 0; }
+[data-js] .scrub-text .u { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .scrub,
+  [data-js] .scrub-text .u { opacity: 1 !important; filter: none !important; transform: none !important; }
+}
+
+/* ─── Page rails ─────────────────────────────────────────── */
+.page-rails {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+/* Too little width on a phone for a decorative margin to be anything but clutter. */
+@media (max-width: 640px) {
+  .page-rails { display: none; }
+}
+
+/* The heading column holds its place while the steps scroll past it. */
+.how-aside {
+  position: sticky;
+  top: 7rem;
+  align-self: start;
+}
+@media (max-width: 980px) {
+  .how-aside { position: static; }
 }

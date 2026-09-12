@@ -80,6 +80,7 @@ export default function Onboarding() {
 
         <Step
           n="03"
+          last
           title="Start earning"
           desc="Install the extension, paste the key into Keryx: Connect agent, and keep the spinner visible."
         >
@@ -109,9 +110,9 @@ export default function Onboarding() {
 }
 
 /** One numbered setup step, using the same rail language as the landing. */
-function Step({ n, title, desc, children }: { n: string; title: string; desc: string; children: React.ReactNode }) {
+function Step({ n, title, desc, last, children }: { n: string; title: string; desc: string; last?: boolean; children: React.ReactNode }) {
   return (
-    <div className="step-row" style={{ paddingBottom: "2.4rem" }}>
+    <div className={`step-row${last ? " step-row-end" : ""}`} style={last ? undefined : { paddingBottom: "2.4rem" }}>
       <span className="step-mark mono" style={{ color: "var(--color-cream)" }}>{n}</span>
       <div>
         <h2 style={{ margin: "0 0 0.4rem", fontSize: "1.2rem", fontWeight: 600, letterSpacing: "-0.025em" }}>{title}</h2>

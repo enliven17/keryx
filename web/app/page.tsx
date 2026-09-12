@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Logo } from "@/components/ui";
 import { ClaudeTui } from "@/components/ClaudeTui";
 import { Navbar } from "@/components/Navbar";
-import { HGutter, Reveal, SplitText, VGutter } from "@/components/motion";
+import { HGutter, Reveal, Scrub, ScrubText, SplitText, VGutter } from "@/components/motion";
 
-const FRAME: React.CSSProperties = { maxWidth: 1240, margin: "0 auto", padding: "0 clamp(1.15rem, 4vw, 1.75rem)" };
+const FRAME: React.CSSProperties = { maxWidth: 1240, margin: "0 auto", padding: "0 clamp(1.6rem, 5vw, 3.5rem)" };
 
 const NAV_LINKS = [
   { href: "/onboarding", label: "For earners" },
@@ -44,6 +44,23 @@ const STEPS = [
   },
 ];
 
+const PROOF = [
+  {
+    chain: "Ethereum Sepolia",
+    event: "EngagementRecorded",
+    hash: "0x94d5993d3248bdf8363bfd66e3236bfa65190f6aec6d3c55ef614db755ae3e46",
+    href: "https://sepolia.etherscan.io/tx/0x94d5993d3248bdf8363bfd66e3236bfa65190f6aec6d3c55ef614db755ae3e46",
+    accent: "var(--color-text-dim)",
+  },
+  {
+    chain: "Creditcoin",
+    event: "AttestcoinSettlement.execute",
+    hash: "0xe75c826a62b75b48caa813bef11b99ef00a3da3284181b9792a8e26996b4c608",
+    href: "https://creditcoin-testnet.blockscout.com/tx/0xe75c826a62b75b48caa813bef11b99ef00a3da3284181b9792a8e26996b4c608",
+    accent: "var(--color-cream)",
+  },
+];
+
 const VALUES = [
   {
     t: "Get paid to prompt",
@@ -64,7 +81,8 @@ const VALUES = [
 
 export default function Landing() {
   return (
-    <main>
+    <main style={{ position: "relative" }}>
+      <Rails />
       <Navbar
         links={NAV_LINKS}
         right={
@@ -75,22 +93,19 @@ export default function Landing() {
       />
 
       {/* ─── Hero ───────────────────────────────────────────── */}
-      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(6.5rem, 14vw, 9rem) 0 clamp(2.5rem, 6vw, 4rem)" }}>
+      <section
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          padding: "clamp(7.5rem, 16vw, 11rem) 0 clamp(4rem, 9vw, 6.5rem)",
+        }}
+      >
         <div className="aurora" aria-hidden />
-        <div className="grid-veil" aria-hidden />
-        <Rails />
 
         <div style={{ ...FRAME, position: "relative", zIndex: 2 }}>
           <div className="hero-grid">
             <div>
-              <Reveal delay={80}>
-                <span className="pill" style={{ borderColor: "rgba(252,235,204,0.3)", color: "var(--color-cream)" }}>
-                  <span className="dot" style={{ background: "var(--color-cream)", animation: "keryx-pulse 1.8s infinite" }} />
-                  Proof-settled attention
-                </span>
-              </Reveal>
-
-              <h1 className="display" style={{ fontSize: "clamp(2.8rem, 6.4vw, 5.1rem)", margin: "1.3rem 0 0" }}>
+              <h1 className="display" style={{ fontSize: "clamp(2.8rem, 6.4vw, 5.1rem)", margin: 0 }}>
                 <SplitText text="Get paid" by="char" delay={160} />
                 <br />
                 <SplitText text="to" by="char" delay={460} />{" "}
@@ -107,17 +122,17 @@ export default function Landing() {
                     lineHeight: 1.55,
                     color: "var(--color-text-dim)",
                     maxWidth: 470,
-                    margin: "1.35rem 0 0",
+                    margin: "1.5rem 0 0",
                   }}
                 >
                   Your AI coding agent spends minutes thinking. Keryx turns that dead time into a
-                  transparent ad marketplace — earners keep half, and no payout moves until the
+                  transparent ad marketplace. Earners keep half, and no payout moves until the
                   impression is proved on-chain.
                 </p>
               </Reveal>
 
               <Reveal delay={460}>
-                <div style={{ display: "flex", gap: "0.7rem", marginTop: "1.7rem", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: "0.7rem", marginTop: "1.9rem", flexWrap: "wrap" }}>
                   <Link href="/onboarding" className="btn btn-white">
                     Start earning
                   </Link>
@@ -139,29 +154,52 @@ export default function Landing() {
 
       <HGutter />
 
-      {/* ─── How it works: the cross-chain path, as a path ──── */}
-      <section style={{ ...FRAME, paddingTop: "clamp(3.2rem, 8vw, 5.5rem)", paddingBottom: "clamp(3.2rem, 8vw, 5.5rem)" }}>
+      {/*
+        One section, one spine. The four steps and the settled transactions sit on
+        the same dashed line, so the proof reads as where that path ended rather
+        than as a separate claim about it.
+      */}
+      <section
+        style={{
+          ...FRAME,
+          paddingTop: "clamp(3.5rem, 9vw, 6rem)",
+          paddingBottom: "clamp(3.5rem, 9vw, 6rem)",
+        }}
+      >
         <div className="how-grid">
-          <div>
+          <div className="how-aside">
             <span className="eyebrow">How it works</span>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.2vw, 3.1rem)", marginTop: "1.1rem", lineHeight: 1.04 }}>
-              <SplitText text="Replace the spinner." />
+            <h2
+              className="display"
+              style={{ fontSize: "clamp(1.9rem, 3.2vw, 3.1rem)", marginTop: "1.1rem", lineHeight: 1.04 }}
+            >
+              <ScrubText text="Replace the spinner." />
               <br />
               <span style={{ color: "var(--color-cream)" }}>
-                <SplitText text="Split the revenue." delay={180} />
+                <ScrubText text="Split the revenue." start={0.84} end={0.4} />
               </span>
             </h2>
-            <Reveal delay={260}>
-              <p style={{ color: "var(--color-text-dim)", fontSize: "0.93rem", lineHeight: 1.65, marginTop: "1.3rem", maxWidth: "38ch" }}>
+            <Scrub start={0.86} end={0.52}>
+              <p
+                style={{
+                  color: "var(--color-text-dim)",
+                  fontSize: "0.93rem",
+                  lineHeight: 1.65,
+                  marginTop: "1.3rem",
+                  maxWidth: "38ch",
+                }}
+              >
                 Two chains, one receipt. The impression is written where Keryx can be audited, and
                 the money moves where the proof lands.
               </p>
-            </Reveal>
+            </Scrub>
           </div>
 
           <div>
-            {STEPS.map((s, i) => (
-              <Reveal key={s.n} delay={i * 90}>
+            {STEPS.map((s) => (
+              // Each step owns its own trigger, so they resolve in the order the
+              // reader reaches them rather than on a shared timer.
+              <Scrub key={s.n} start={0.9} end={0.62} y={36}>
                 <div className="step-row">
                   <span className="step-mark mono" style={{ color: s.color }}>
                     {s.n}
@@ -171,54 +209,75 @@ export default function Landing() {
                       <span className="dot" style={{ background: "currentColor" }} />
                       {s.chain}
                     </span>
-                    <h3 style={{ margin: "0.5rem 0 0.45rem", fontSize: "1.22rem", fontWeight: 600, letterSpacing: "-0.025em" }}>
+                    <h3
+                      style={{
+                        margin: "0.5rem 0 0.45rem",
+                        fontSize: "1.22rem",
+                        fontWeight: 600,
+                        letterSpacing: "-0.025em",
+                      }}
+                    >
                       {s.t}
                     </h3>
-                    <p style={{ margin: 0, color: "var(--color-text-dim)", fontSize: "0.92rem", lineHeight: 1.6, maxWidth: "52ch" }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        color: "var(--color-text-dim)",
+                        fontSize: "0.92rem",
+                        lineHeight: 1.6,
+                        maxWidth: "52ch",
+                      }}
+                    >
                       {s.d}
                     </p>
                   </div>
                 </div>
-              </Reveal>
+              </Scrub>
             ))}
+
+            {/* The same spine continues into the receipts: this is that path, already walked. */}
+            <Scrub start={0.9} end={0.6} y={36}>
+              <div className="step-row step-row-end">
+                <span
+                  className="step-mark"
+                  style={{ color: "var(--color-earn)", borderColor: "var(--color-earn)" }}
+                  aria-hidden
+                >
+                  ✓
+                </span>
+                <div style={{ paddingTop: 1 }}>
+                  <span className="eyebrow">Proved on testnet</span>
+                  <h3
+                    style={{
+                      margin: "0.6rem 0 0.5rem",
+                      fontSize: "1.22rem",
+                      fontWeight: 600,
+                      letterSpacing: "-0.025em",
+                    }}
+                  >
+                    One impression, end to end
+                  </h3>
+                  <p
+                    style={{
+                      margin: "0 0 1.35rem",
+                      color: "var(--color-text-dim)",
+                      fontSize: "0.92rem",
+                      lineHeight: 1.6,
+                      maxWidth: "52ch",
+                    }}
+                  >
+                    A single viewable impression charged 600 USDC base units and split them 50/50.
+                    Nothing moved until the source receipt was proved on Creditcoin.
+                  </p>
+                  <div style={{ display: "grid", gap: "0.75rem" }}>
+                    {PROOF.map((p) => (
+                      <ProofCard key={p.hash} {...p} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Scrub>
           </div>
-        </div>
-      </section>
-
-      <HGutter />
-
-      {/* ─── Proof ──────────────────────────────────────────── */}
-      <section style={{ ...FRAME, paddingTop: "clamp(3rem, 8vw, 5rem)", paddingBottom: "clamp(3rem, 8vw, 5rem)" }}>
-        <span className="eyebrow">Proved on testnet</span>
-        <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.9rem)", margin: "1.1rem 0 1.1rem", maxWidth: 720 }}>
-          <SplitText text="One impression, end to end." />
-        </h2>
-        <Reveal delay={160}>
-          <p style={{ color: "var(--color-text-dim)", maxWidth: 620, lineHeight: 1.6, margin: "0 0 2.4rem" }}>
-            A single viewable impression charged 600 USDC base units and split them 50/50. Nothing
-            moved until the source receipt was proved on Creditcoin.
-          </p>
-        </Reveal>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem" }}>
-          <Reveal delay={120}>
-            <ProofCard
-              chain="Ethereum Sepolia"
-              event="EngagementRecorded"
-              hash="0x94d5993d3248bdf8363bfd66e3236bfa65190f6aec6d3c55ef614db755ae3e46"
-              href="https://sepolia.etherscan.io/tx/0x94d5993d3248bdf8363bfd66e3236bfa65190f6aec6d3c55ef614db755ae3e46"
-              accent="var(--color-text-dim)"
-            />
-          </Reveal>
-          <Reveal delay={240}>
-            <ProofCard
-              chain="Creditcoin"
-              event="AttestcoinSettlement.execute"
-              hash="0xe75c826a62b75b48caa813bef11b99ef00a3da3284181b9792a8e26996b4c608"
-              href="https://creditcoin-testnet.blockscout.com/tx/0xe75c826a62b75b48caa813bef11b99ef00a3da3284181b9792a8e26996b4c608"
-              accent="var(--color-cream)"
-            />
-          </Reveal>
         </div>
       </section>
 
@@ -231,10 +290,14 @@ export default function Landing() {
             <div key={v.t} style={{ position: "relative" }}>
               {i > 0 && <VGutter style={{ left: -13 }} />}
               <Reveal delay={i * 110}>
-                <div style={{ padding: "clamp(2rem, 5vw, 3rem) clamp(1.15rem, 4vw, 1.9rem)" }}>
+                <div style={{ padding: "clamp(2rem, 5vw, 3rem) clamp(0rem, 3vw, 1.9rem)" }}>
                   <div style={{ width: 9, height: 9, borderRadius: "50%", background: v.c, marginBottom: 18 }} />
-                  <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.28rem", fontWeight: 600, letterSpacing: "-0.025em" }}>{v.t}</h3>
-                  <p style={{ margin: 0, color: "var(--color-text-dim)", fontSize: "0.92rem", lineHeight: 1.65 }}>{v.d}</p>
+                  <h3 style={{ margin: "0 0 0.7rem", fontSize: "1.28rem", fontWeight: 600, letterSpacing: "-0.025em" }}>
+                    {v.t}
+                  </h3>
+                  <p style={{ margin: 0, color: "var(--color-text-dim)", fontSize: "0.92rem", lineHeight: 1.65 }}>
+                    {v.d}
+                  </p>
                 </div>
               </Reveal>
             </div>
@@ -245,9 +308,10 @@ export default function Landing() {
       <HGutter />
 
       {/* ─── CTA ────────────────────────────────────────────── */}
-      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(3.5rem, 9vw, 6rem) 0", textAlign: "center" }}>
+      <section
+        style={{ position: "relative", overflow: "hidden", padding: "clamp(3.5rem, 9vw, 6rem) 0", textAlign: "center" }}
+      >
         <div className="aurora" aria-hidden style={{ opacity: 0.5 }} />
-        <Rails />
         <div style={{ ...FRAME, position: "relative", zIndex: 2 }}>
           <h2 className="display" style={{ fontSize: "clamp(1.9rem, 4vw, 3rem)", maxWidth: 800, margin: "0 auto" }}>
             <SplitText text="Reach people who are already paying attention." />
@@ -292,12 +356,16 @@ export default function Landing() {
   );
 }
 
-/** The two dashed rails that mark the content column's edges. */
+/**
+ * The dashed rails marking the page's outer margin. They span the whole document
+ * rather than each section, so the line reads as one continuous edge, and they
+ * sit well outside the text column so nothing crowds them.
+ */
 function Rails() {
   return (
-    <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}>
-      <VGutter style={{ left: "max(0px, calc(50% - 620px))" }} />
-      <VGutter style={{ right: "max(0px, calc(50% - 620px))" }} />
+    <div className="page-rails" aria-hidden>
+      <VGutter style={{ left: "max(0.9rem, calc(50% - 650px))" }} />
+      <VGutter style={{ right: "max(0.9rem, calc(50% - 650px))" }} />
     </div>
   );
 }
@@ -321,14 +389,18 @@ function ProofCard({
       target="_blank"
       rel="noreferrer"
       className="card"
-      style={{ padding: "1.4rem", textDecoration: "none", color: "inherit", display: "block" }}
+      style={{ padding: "1.1rem 1.25rem", textDecoration: "none", color: "inherit", display: "block" }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
         <span className="dot" style={{ background: accent }} />
-        <span className="chain-tag" style={{ color: "var(--color-text-dim)" }}>{chain}</span>
+        <span className="chain-tag" style={{ color: "var(--color-text-dim)" }}>
+          {chain}
+        </span>
       </div>
-      <div className="mono" style={{ fontSize: "0.9rem", marginBottom: 10 }}>{event}</div>
-      <div className="mono" style={{ fontSize: "0.72rem", color: "var(--color-text-faint)", wordBreak: "break-all" }}>
+      <div className="mono" style={{ fontSize: "0.88rem", marginBottom: 8 }}>
+        {event}
+      </div>
+      <div className="mono" style={{ fontSize: "0.7rem", color: "var(--color-text-faint)", wordBreak: "break-all" }}>
         {hash}
       </div>
     </a>
