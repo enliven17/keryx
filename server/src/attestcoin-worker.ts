@@ -11,6 +11,7 @@ import {
 
 type SourceEvent = {
   transactionHash: `0x${string}`;
+  blockNumber: bigint;
   args: {
     receiptId: `0x${string}`;
     campaignId: bigint;
@@ -28,6 +29,14 @@ const proofBuilder = new proofProvider.service.ProofBuilder(
   config.proofBuilderUrl,
 );
 
+/** Highest source block Attestcoin has attested. Proofs below it are servable. */
+async function attestedHeight(): Promise<bigint> {
+  const res = await fetch(`${config.proofBuilderUrl}/api/v1/attested-height/${config.sourceChainKey}`);
+  if (!res.ok) throw new Error(`attested-height ${res.status}`);
+  const { attestedHeight: height } = (await res.json()) as { attestedHeight: number };
+  return BigInt(height);
+}
+
 export async function processAttestcoinEvents(): Promise<number> {
   if (running || !deployment.deployerPrivateKey) return 0;
   running = true;
@@ -44,10 +53,17 @@ export async function processAttestcoinEvents(): Promise<number> {
       toBlock,
     }) as unknown as SourceEvent[];
 
+    const attested = await attestedHeight();
     for (const log of logs) {
       const { receiptId, campaignId, earner, impressions, clicks } = log.args;
       const existing = await store.getReceipt(receiptId);
       if (existing?.tx_hash) continue;
+      if (log.blockNumber > attested) {
+        // Attestcoin has not attested this source block yet; retry on the next tick.
+        console.log(`[attestcoin] receipt=${receiptId} waiting for attestation (block ${log.blockNumber} > ${attested})`);
+        hadFailure = true;
+        continue;
+      }
 
       try {
         const response = await proofBuilder.getProof(log.transactionHash);
@@ -82,6 +98,7 @@ export async function processAttestcoinEvents(): Promise<number> {
           source_tx_hash: log.transactionHash,
           tx_hash: targetHash,
         });
+        console.log(`[attestcoin] settled receipt=${receiptId} source=${log.transactionHash} target=${targetHash}`);
         settled++;
       } catch (error) {
         hadFailure = true;

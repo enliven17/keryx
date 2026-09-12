@@ -44,24 +44,38 @@ That call writes EngagementRecorded to SourceEngagement. The Attestcoin worker c
 
 ## 4. Testnet flow
 
-Deploy SourceEngagement on a supported source testnet. Deploy the Creditcoin suite with:
+The live deployment is already wired: SourceEngagement on Ethereum Sepolia
+(`0x5049168e6c5f7B0fa0D104ad669ab37c3a9Bc946`, Attestcoin chain key 1) and the settlement suite on
+Creditcoin testnet with the ASC at `0x42623b442fd0F3BC6796DA0a08a0074ba16f3209`. To redeploy, see
+"Creditcoin testnet" in the README.
+
+Point server/.env at it:
 
 ~~~dotenv
 KERYX_NETWORK=creditcoin
 CREDITCOIN_RPC_URL=https://rpc.cc3-testnet.creditcoin.network
 CHAIN_ID=102031
-SOURCE_CHAIN_RPC_URL=https://rpc.sepolia.org
+SOURCE_CHAIN_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
+SOURCE_CHAIN_ID=11155111
 SOURCE_CHAIN_KEY=1
-SOURCE_ENGAGEMENT=0x...
-SOURCE_ENGAGEMENT_PRIVATE_KEY=0x...
+SOURCE_START_BLOCK=11688111
 DEPLOYER_PRIVATE_KEY=0x...
+SOURCE_ENGAGEMENT_PRIVATE_KEY=0x...
 DATABASE_URL=postgresql://...
 ~~~
 
-After writing contracts/deployments/creditcoin.json, run:
+The deployer wallet needs CTC on Creditcoin testnet, and the source wallet needs Sepolia ETH.
+Start the stack and drive one paid impression:
 
 ~~~bash
 NETWORK=creditcoin ./scripts/demo.sh
+(cd server && node scripts/demo-flow.mjs 1)
 ~~~
 
-The worker polls source receipts, requests proof data, calls execute on the CTC ASC, and records the target transaction in Neon. The earner can then claim the accrued USDC from /earn.
+`demo-flow.mjs` registers the creative, serves the ad, signs an impression as the earner, anchors
+the batch on Sepolia, and prints both explorer links. The Attestcoin worker then polls
+`/api/v1/attested-height/1`, waits out the proof builder's 32-block reorg window (~10 minutes),
+requests the transaction proof, and calls `execute` on the ASC. The CTC transaction hash lands in
+Neon and appears in `GET /activity` and on the /earn page.
+
+The earner claims the accrued USDC with `claimAll()` on CampaignEscrow from /earn.

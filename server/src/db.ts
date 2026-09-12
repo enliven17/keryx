@@ -97,20 +97,22 @@ export const store = {
     const now = Date.now();
     const safeUnits = Math.max(0, Math.floor(units));
     const safeCap = Math.max(0, Math.floor(cap));
+    // Postgres infers bare placeholders inside LEAST/GREATEST as text, so every
+    // numeric parameter is cast explicitly.
     const rows = await sql`
       INSERT INTO keryx_usage (endpoint, subject, count, window_start, last_accepted)
-      VALUES ('earning', ${earner}, LEAST(${safeUnits}, ${safeCap}), ${now}, LEAST(${safeUnits}, ${safeCap}))
+      VALUES ('earning', ${earner}, LEAST(${safeUnits}::int, ${safeCap}::int), ${now}::bigint, LEAST(${safeUnits}::int, ${safeCap}::int))
       ON CONFLICT (endpoint, subject) DO UPDATE SET
         last_accepted = CASE
-          WHEN keryx_usage.window_start <= ${now - DAY_MS} THEN LEAST(${safeUnits}, ${safeCap})
-          ELSE LEAST(${safeUnits}, GREATEST(0, ${safeCap} - keryx_usage.count))
+          WHEN keryx_usage.window_start <= ${now - DAY_MS}::bigint THEN LEAST(${safeUnits}::int, ${safeCap}::int)
+          ELSE LEAST(${safeUnits}::int, GREATEST(0, ${safeCap}::int - keryx_usage.count))
         END,
-        count = LEAST(${safeCap}, CASE
-          WHEN keryx_usage.window_start <= ${now - DAY_MS} THEN 0
+        count = LEAST(${safeCap}::int, CASE
+          WHEN keryx_usage.window_start <= ${now - DAY_MS}::bigint THEN 0
           ELSE keryx_usage.count
-        END + ${safeUnits}),
+        END + ${safeUnits}::int),
         window_start = CASE
-          WHEN keryx_usage.window_start <= ${now - DAY_MS} THEN ${now}
+          WHEN keryx_usage.window_start <= ${now - DAY_MS}::bigint THEN ${now}::bigint
           ELSE keryx_usage.window_start
         END
       RETURNING last_accepted AS accepted`;
@@ -122,19 +124,19 @@ export const store = {
     const safeLimit = Math.max(0, Math.floor(limit));
     const rows = await sql`
       INSERT INTO keryx_usage (endpoint, subject, count, window_start, last_accepted)
-      VALUES (${endpoint}, ${subject}, 1, ${now}, 1)
+      VALUES (${endpoint}, ${subject}, 1, ${now}::bigint, 1)
       ON CONFLICT (endpoint, subject) DO UPDATE SET
         count = CASE
-          WHEN keryx_usage.window_start <= ${now - DAY_MS} THEN 1
+          WHEN keryx_usage.window_start <= ${now - DAY_MS}::bigint THEN 1
           ELSE keryx_usage.count + 1
         END,
         window_start = CASE
-          WHEN keryx_usage.window_start <= ${now - DAY_MS} THEN ${now}
+          WHEN keryx_usage.window_start <= ${now - DAY_MS}::bigint THEN ${now}::bigint
           ELSE keryx_usage.window_start
         END,
         last_accepted = 1
-      WHERE keryx_usage.window_start <= ${now - DAY_MS}
-         OR keryx_usage.count < ${safeLimit}
+      WHERE keryx_usage.window_start <= ${now - DAY_MS}::bigint
+         OR keryx_usage.count < ${safeLimit}::int
       RETURNING count`;
     return rows.length > 0;
   },
