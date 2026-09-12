@@ -1,0 +1,11 @@
+{
+  "name": "@keryx/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Keryx CLI for the Claude Code status line.",
+  "bin": { "keryx": "bin/keryx.mjs" },
+  "dependencies": {
+    "viem": "^2.21.55"
+  }
+}
