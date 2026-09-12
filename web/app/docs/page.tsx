@@ -39,9 +39,7 @@ export default function Docs() {
         />
 
         <div className="docs-layout">
-          <Reveal>
-            <DocsNav links={LINKS} />
-          </Reveal>
+          <DocsNav links={LINKS} />
 
           <Reveal delay={110}>
           <article className="prose">

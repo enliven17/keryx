@@ -228,6 +228,10 @@ app.get("/activity", async (c) => c.json({
 
 app.post("/settle/flush", async (c) => c.json({ anchored: await flushSourceEngagements() }));
 
+// Last line of defence: the ad server staying up matters more than any single
+// failed background task, and Node exits on an unhandled rejection by default.
+process.on("unhandledRejection", (reason) => console.error("[server] unhandled rejection:", reason));
+
 if (deployment.sourcePrivateKey) startSourceAnchorLoop();
 serve({ fetch: app.fetch, port: config.port }, (info) => {
   console.log(`[server] Keryx listening on http://localhost:${info.port} (${config.network})`);

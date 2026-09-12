@@ -110,32 +110,32 @@ export function FlowDiagram() {
 /** Which contract may call which, and what each call is allowed to do. */
 export function ContractDiagram() {
   return (
-    <svg viewBox="0 0 760 300" role="img" aria-label="Keryx contract permissions" style={{ width: "100%", height: "auto" }}>
+    <svg viewBox="0 0 760 360" role="img" aria-label="Keryx contract permissions" style={{ width: "100%", height: "auto" }}>
       <defs>
         <Arrow id="a2" />
       </defs>
 
-      <Box x={280} y={0} w={200} h={54} title="CampaignEscrow" sub="owner: deployer" accent={CREAM} />
-      <Box x={20} y={130} w={190} h={54} title="AuctionHouse" sub="controller" />
-      <Box x={285} y={130} w={190} h={54} title="AttestcoinSettlement" sub="controller · ASC" />
-      <Box x={550} y={130} w={190} h={54} title="Query verifier" sub="precompile 0x…0FD2" accent={DIM} />
-      <Box x={285} y={244} w={190} h={48} title="SourceEngagement" sub="on the source chain" />
+      <Box x={280} y={10} w={200} h={54} title="CampaignEscrow" sub="owner: deployer" accent={CREAM} />
+      <Box x={20} y={150} w={190} h={54} title="AuctionHouse" sub="controller" />
+      <Box x={285} y={150} w={190} h={54} title="AttestcoinSettlement" sub="controller · ASC" />
+      <Box x={550} y={150} w={190} h={54} title="Query verifier" sub="precompile 0x…0FD2" accent={DIM} />
+      <Box x={285} y={262} w={190} h={48} title="SourceEngagement" sub="on the source chain" />
 
       <g stroke={LINE} strokeWidth="1.2" fill="none" markerEnd="url(#a2)">
-        <path d="M115 130 L115 27 L280 27" />
-        <path d="M380 130 L380 54" />
-        <path d="M550 157 L475 157" />
-        <path d="M380 244 L380 210" strokeDasharray="4 5" />
+        <path d="M115 150 L115 37 L280 37" />
+        <path d="M380 150 L380 64" />
+        <path d="M550 177 L475 177" />
+        <path d="M380 262 L380 210" strokeDasharray="4 5" />
       </g>
 
       <g fontSize="10.5" fill={DIM} fontFamily="var(--font-mono)">
-        <text x="128" y="80">setBid</text>
-        <text x="392" y="100">charge · credit</text>
-        <text x="484" y="150">verifyAndEmit</text>
-        <text x="392" y="230">proved receipt</text>
+        <text x="126" y="96">setBid</text>
+        <text x="392" y="112">charge · credit</text>
+        <text x="512" y="168" textAnchor="middle">verifyAndEmit</text>
+        <text x="392" y="242">proved receipt</text>
       </g>
 
-      <text x="20" y="290" fill={FAINT} fontSize="10.5">
+      <text x="20" y="345" fill={FAINT} fontSize="10.5">
         Only a controller moves money. Settlement becomes one after the proof verifies.
       </text>
     </svg>

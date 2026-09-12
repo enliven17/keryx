@@ -44,7 +44,9 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* No overflow-x here: it turns the body into a scroll container and kills
+     position:sticky for everything inside. The e2e suite asserts no route
+     scrolls sideways instead. */
 }
 ::selection {
   background: rgba(252, 235, 204, 0.28);
@@ -674,9 +676,11 @@ body {
   display: grid;
   grid-template-columns: 232px minmax(0, 1fr);
   gap: 3.5rem;
-  /* The sidebar's grid item must stretch to the article's height, or the sticky
-     nav inside it has no room to travel and simply scrolls away. */
-  align-items: stretch;
+  /* The sidebar is itself the grid item. A grid item's containing block is its
+     grid area, which spans the article's full height, so `align-self: start`
+     leaves it content-sized with room to travel. Wrapping it in anything, or
+     letting it stretch, takes that room away and it scrolls off instead. */
+  align-items: start;
 }
 .docs-side {
   position: sticky;

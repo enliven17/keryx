@@ -197,17 +197,19 @@ test("the docs sidebar follows the reader down the page", async ({ page, isMobil
   await page.goto("/docs", { waitUntil: "domcontentloaded" });
   await waitForHydration(page);
 
-  const side = page.locator(".docs-side");
-  const before = (await side.boundingBox())?.y ?? 0;
+  // getBoundingClientRect is viewport-relative; Playwright's boundingBox() is
+  // document-relative and would just grow with the scroll offset.
+  const viewportTop = () =>
+    page.evaluate(() => {
+      const el = document.querySelector<HTMLElement>(".docs-side");
+      return el ? Math.round(el.getBoundingClientRect().top) : -1;
+    });
 
+  expect(await viewportTop()).toBeGreaterThan(100);
   await page.evaluate(() => window.scrollTo(0, 1800));
-  await expect
-    .poll(async () => (await side.boundingBox())?.y ?? -1, { timeout: 5_000 })
-    .toBeGreaterThan(0);
 
-  const after = (await side.boundingBox())?.y ?? 0;
-  // It stuck rather than scrolling away: still on screen, near the top.
-  expect(after).toBeLessThanOrEqual(before);
-  expect(after).toBeGreaterThan(0);
-  await expect(side.getByRole("link", { name: "Limits and caveats" })).toBeVisible();
+  // Pinned under the navbar rather than carried off the top of the screen.
+  await expect.poll(viewportTop, { timeout: 5_000 }).toBeLessThan(140);
+  expect(await viewportTop()).toBeGreaterThan(0);
+  await expect(page.locator(".docs-side").getByRole("link", { name: "Limits and caveats" })).toBeVisible();
 });

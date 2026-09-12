@@ -114,8 +114,13 @@ export async function processAttestcoinEvents(): Promise<number> {
 
 export function startAttestcoinWorker(): void {
   console.log(`[attestcoin] watching source chain from block ${nextBlock}`);
-  void processAttestcoinEvents();
-  setInterval(() => void processAttestcoinEvents(), config.sourcePollMs);
+  // Same reason as the anchor loop: a source-RPC or prover hiccup is a retry,
+  // not a reason to exit. `nextBlock` only advances on a clean pass, so nothing
+  // is skipped by failing a tick.
+  const run = () =>
+    processAttestcoinEvents().catch((error) => console.error("[attestcoin] tick failed:", message(error)));
+  void run();
+  setInterval(run, config.sourcePollMs);
 }
 
 startAttestcoinWorker();

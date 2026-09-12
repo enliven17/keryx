@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion";
 import { useAccount } from "wagmi";
 import { Nav } from "@/components/Nav";
-import { Section, ChainBadge, PageHeader } from "@/components/ui";
+import { Section, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { fmtUsdc, perImpression, shortAddr } from "@/lib/format";
@@ -90,7 +90,7 @@ export default function Advertise() {
                       <td className="mono">{fmtUsdc(c.pricePerBlock, { decimals: 4 })}</td>
                       <td className="mono" style={{ color: "var(--color-text-dim)" }}>{perImpression(c.pricePerBlock)}</td>
                       <td className="mono">{fmtUsdc(c.balance)}</td>
-                      <td><ChainBadge /></td>
+                      <td className="mono" style={{ color: "var(--color-text-dim)" }}>Creditcoin</td>
                     </tr>
                   );
                 })}

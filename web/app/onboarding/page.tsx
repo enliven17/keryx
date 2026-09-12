@@ -5,7 +5,7 @@ import Link from "next/link";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useAccount } from "wagmi";
 import { Nav } from "@/components/Nav";
-import { ChainBadge, Section, PageHeader } from "@/components/ui";
+import { Section, PageHeader } from "@/components/ui";
 import { WalletButton } from "@/components/WalletButton";
 
 export default function Onboarding() {
@@ -35,7 +35,6 @@ export default function Onboarding() {
         <PageHeader
           eyebrow="Get set up"
           title="Turn coding time into USDC."
-          right={<ChainBadge />}
           lead="Connect a wallet for campaign actions, create a local earner key, then run Keryx beside Claude Code. Accepted engagement is anchored on the source chain and settled on Creditcoin."
         />
 

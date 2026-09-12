@@ -6,7 +6,7 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { getWalletClient } from "wagmi/actions";
 import { keccak256, toBytes, parseUnits, createPublicClient, http, type Address } from "viem";
 import { Nav } from "@/components/Nav";
-import { Section, AdCreativeCard, ChainBadge, PageHeader } from "@/components/ui";
+import { Section, AdCreativeCard, PageHeader } from "@/components/ui";
 import { useDeployment } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { useToast } from "@/components/Toaster";
@@ -234,7 +234,7 @@ export default function NewCampaign() {
             <label className="label">Live preview (Claude Code spinner)</label>
             <AdCreativeCard text={text} url={url.replace(/^https?:\/\//, "")} earning="+$0.0006" />
             <div style={{ marginTop: "0.75rem", display: "flex", gap: 8, alignItems: "center" }}>
-              <ChainBadge /> <span style={{ fontSize: "0.8rem", color: "var(--color-text-dim)" }}>settles on Creditcoin</span>
+              <span style={{ fontSize: "0.8rem", color: "var(--color-text-dim)" }}>Settles on Creditcoin</span>
             </div>
           </div>
         </div>

@@ -54,7 +54,12 @@ export async function flushSourceEngagements(): Promise<number> {
 
 export function startSourceAnchorLoop(): void {
   if (timer) return;
-  timer = setInterval(() => void flushSourceEngagements(), config.settle.intervalMs);
+  // A transient database or RPC failure must not take the process down: an
+  // unhandled rejection from a timer is fatal in Node, and the next tick would
+  // have retried anyway.
+  timer = setInterval(() => {
+    flushSourceEngagements().catch((error) => console.error("[source] flush failed:", message(error)));
+  }, config.settle.intervalMs);
   console.log(`[source] anchor worker every ${config.settle.intervalMs}ms`);
 }
 

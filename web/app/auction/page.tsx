@@ -2,7 +2,7 @@
 
 import { Nav } from "@/components/Nav";
 import { Reveal } from "@/components/motion";
-import { Section, ChainBadge, PageHeader } from "@/components/ui";
+import { Section, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { fmtUsdc, perImpression, shortAddr } from "@/lib/format";
@@ -21,7 +21,6 @@ export default function AuctionPage() {
         <PageHeader
           eyebrow="Marketplace"
           title="Live auction"
-          right={<ChainBadge />}
           lead={
             <>
               English-ascending. The highest funded bid holds every Claude Code spinner until it is

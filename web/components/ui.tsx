@@ -12,16 +12,6 @@ export function Logo({ size = 20 }: { size?: number }) {
   );
 }
 
-export function ChainBadge({ chain = "Creditcoin" }: { chain?: "Creditcoin" | "Keryx Local" }) {
-  const color = chain === "Creditcoin" ? "var(--color-brand)" : "var(--color-earn)";
-  return (
-    <span className="pill" style={{ fontSize: "0.72rem" }}>
-      <span className="dot" style={{ background: color }} />
-      {chain}
-    </span>
-  );
-}
-
 export function Stat({ label, value, sub, accent }: { label: string; value: ReactNode; sub?: ReactNode; accent?: string }) {
   return (
     <div style={{ padding: "1.15rem 1.3rem" }}>

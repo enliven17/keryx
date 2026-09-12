@@ -2,7 +2,7 @@
 
 import { Nav } from "@/components/Nav";
 import { Reveal } from "@/components/motion";
-import { Section, Stat, StatRow, ChainBadge, PageHeader } from "@/components/ui";
+import { Section, Stat, StatRow, PageHeader } from "@/components/ui";
 import { usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { shortAddr } from "@/lib/format";
@@ -36,7 +36,6 @@ export default function Leaderboard() {
         <PageHeader
           eyebrow="Settled delivery"
           title="Leaderboard"
-          right={<ChainBadge />}
           lead="Ranked from proved receipts only. A click counts as fifty impression-equivalents, the same weighting the settlement contract uses."
         />
 

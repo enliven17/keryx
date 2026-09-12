@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createWalletClient, createPublicClient, http, type Address } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { Nav } from "@/components/Nav";
-import { Section, Stat, StatRow, ChainBadge, AdCreativeCard, PageHeader } from "@/components/ui";
+import { Section, Stat, StatRow, AdCreativeCard, PageHeader } from "@/components/ui";
 import { useDeployment, usePoll } from "@/lib/hooks";
 import { adServer } from "@/lib/server";
 import { fmtUsdc, shortAddr } from "@/lib/format";
@@ -79,10 +79,19 @@ export default function Earn() {
     return (
       <>
         <Nav />
-        <Section style={{ paddingTop: "4rem", textAlign: "center" }}>
-          <h1>No agent connected</h1>
-          <p style={{ color: "var(--color-text-dim)" }}>Finish onboarding to create your local earner key.</p>
-          <Link href="/onboarding" className="btn btn-primary">Start onboarding →</Link>
+        <Section style={{ paddingTop: "clamp(2rem, 6vw, 3.2rem)", paddingBottom: "4rem" }}>
+          <div className="card" style={{ padding: "clamp(2.5rem, 7vw, 4rem) 2rem", textAlign: "center" }}>
+            <h1 className="display" style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)", margin: 0 }}>
+              No agent connected
+            </h1>
+            <p style={{ color: "var(--color-text-dim)", maxWidth: "42ch", margin: "1rem auto 1.75rem", lineHeight: 1.6 }}>
+              Finish onboarding to create your local earner key. It is generated in your browser and
+              never leaves it.
+            </p>
+            <Link href="/onboarding" className="btn btn-primary">
+              Start onboarding →
+            </Link>
+          </div>
         </Section>
       </>
     );
@@ -96,12 +105,9 @@ export default function Earn() {
           eyebrow="Your wallet"
           title="Earn"
           right={
-            <>
-              <span className="pill mono" style={{ fontSize: "0.72rem" }}>
-                <span className="dot" style={{ background: "var(--color-earn)" }} /> {shortAddr(agent.address)}
-              </span>
-              <ChainBadge />
-            </>
+            <span className="pill mono" style={{ fontSize: "0.72rem" }}>
+              <span className="dot" style={{ background: "var(--color-earn)" }} /> {shortAddr(agent.address)}
+            </span>
           }
         />
 
