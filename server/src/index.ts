@@ -5,7 +5,18 @@ import { isAddress, isHex, keccak256, recoverMessageAddress, toBytes, type Addre
 import { z } from "zod";
 import { config, deployment } from "./config.js";
 import { store } from "./db.js";
-import { addresses, readAccrued, readAuctionBoard, readCampaign, readWinner } from "./chain.js";
+import {
+  addresses,
+  mintUsdc,
+  readAccrued,
+  readAuctionBoard,
+  readCampaign,
+  readNativeBalance,
+  readUsdcBalance,
+  readWinner,
+  sendNative,
+  waitForTargetReceipt,
+} from "./chain.js";
 import { flushSourceEngagements, startSourceAnchorLoop } from "./settlement.js";
 
 const app = new Hono();
@@ -190,6 +201,55 @@ app.post("/report", async (c) => {
     campaignId,
     accepted,
   });
+});
+
+/**
+ * Testnet faucet. It spends from the deployer wallet, so it is deliberately
+ * stingy: one grant per address per day, and each asset is topped up only when
+ * the wallet is actually short of it. The mock token is mintable, the native
+ * currency is not, so gas comes out of a finite balance.
+ */
+const GAS_GRANT = 3_000000000000000000n;      // 3 CTC, roughly fifteen campaign transactions
+const GAS_FLOOR = 1_000000000000000000n;      // don't top up above 1 CTC
+const USDC_GRANT = 1_000_000000n;             // 1,000 USDC
+const USDC_FLOOR = 200_000000n;               // don't mint above 200 USDC
+
+app.post("/faucet", async (c) => {
+  const body = (await c.req.json().catch(() => null)) as { address?: string } | null;
+  const address = body?.address;
+  if (!address || !isAddress(address)) return c.json({ error: "address must be an EVM address" }, 400);
+  if (!deployment.deployerPrivateKey) return c.json({ error: "faucet is not configured" }, 503);
+
+  if (!(await store.tryIncrementUsage("faucet", address, 1))) {
+    return c.json({ ok: false, error: "This address already used the faucet today." }, 429);
+  }
+
+  try {
+    const [gas, usdc] = await Promise.all([
+      readNativeBalance(address as Address),
+      readUsdcBalance(address as Address),
+    ]);
+
+    const sent: Record<string, string> = {};
+    if (gas < GAS_FLOOR) {
+      const hash = await sendNative(address as Address, GAS_GRANT);
+      await waitForTargetReceipt(hash);
+      sent.gasTx = hash;
+    }
+    if (usdc < USDC_FLOOR) {
+      const hash = await mintUsdc(address as Address, USDC_GRANT);
+      await waitForTargetReceipt(hash);
+      sent.usdcTx = hash;
+    }
+
+    if (!sent.gasTx && !sent.usdcTx) {
+      return c.json({ ok: true, funded: false, reason: "already_funded", address });
+    }
+    return c.json({ ok: true, funded: true, address, ...sent });
+  } catch (error) {
+    console.error("[faucet] failed for", address, message(error));
+    return c.json({ ok: false, error: message(error) }, 502);
+  }
 });
 
 app.post("/trial/:campaignId", async (c) => {

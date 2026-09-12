@@ -19,7 +19,7 @@ function humanize(e: unknown): string {
   const msg = (e as { shortMessage?: string; message?: string })?.shortMessage ?? (e as Error)?.message ?? String(e);
   if (/rejected|denied/i.test(msg)) return "You rejected the request in your wallet.";
   if (/insufficient funds|gas required|gas balance/i.test(msg))
-    return "Not enough gas. Click “Get test USDC” (it tops up gas too), then retry.";
+    return "Not enough gas. Click “Get test funds”, then retry.";
   return msg.split("\n")[0].slice(0, 160);
 }
 
@@ -43,27 +43,29 @@ export default function NewCampaign() {
   const patch = (key: string, p: Partial<TxStep>) =>
     setSteps((s) => s?.map((x) => (x.key === key ? { ...x, ...p } : x)) ?? null);
 
-  /** Mint test USDC + top up native gas. Returns ok. */
+  /** Mint test USDC + top up native gas from the Keryx treasury. Returns ok. */
   async function fundWallet(): Promise<boolean> {
     if (!address) return false;
-    const res = await fetch("/api/faucet", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ address, amount: 1000 }),
-    });
-    if (res.ok) {
-      window.dispatchEvent(new Event("keryx:funded"));
-      return true;
-    }
-    return false;
+    const res = await adServer.faucet(address);
+    if (res.ok) window.dispatchEvent(new Event("keryx:funded"));
+    return Boolean(res.ok);
   }
 
   async function getFaucet() {
     if (!address) return;
-    const id = t.push({ type: "loading", title: "Requesting test funds…" });
-    const ok = await fundWallet();
-    if (ok) t.update(id, { type: "success", title: "Funds arrived", desc: "+1,000 USDC and gas added to your wallet." });
-    else t.update(id, { type: "error", title: "Faucet failed", desc: "Only available on the local dev chain." });
+    const id = t.push({ type: "loading", title: "Requesting test funds…", desc: "Sending gas and test USDC." });
+    const res = await adServer.faucet(address);
+    if (!res.ok) {
+      t.update(id, { type: "error", title: "Faucet failed", desc: res.error ?? "Try again in a moment." });
+      return;
+    }
+    window.dispatchEvent(new Event("keryx:funded"));
+    t.update(id, {
+      type: "success",
+      title: res.funded ? "Funds arrived" : "Already funded",
+      desc: res.funded ? "Test USDC and gas added to your wallet." : "This wallet already has enough to launch.",
+      txHash: (res.usdcTx ?? res.gasTx) as `0x${string}` | undefined,
+    });
   }
 
   async function switchNetwork() {
@@ -221,7 +223,7 @@ export default function NewCampaign() {
               </div>
             )}
             <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn btn-ghost" onClick={getFaucet} disabled={busy || !isConnected}>Get test USDC</button>
+              <button className="btn btn-ghost" onClick={getFaucet} disabled={busy || !isConnected}>Get test funds</button>
               <button className="btn btn-primary" onClick={launch} disabled={busy || !isConnected || !deployment}>
                 {busy ? "Launching…" : "Fund & enter auction"}
               </button>

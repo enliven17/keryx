@@ -15,6 +15,7 @@ import {
   AuctionHouseAbi,
   AttestcoinSettlementAbi,
   CampaignEscrowAbi,
+  MockUSDCAbi,
   SourceEngagementAbi,
 } from "./abis.js";
 
@@ -179,4 +180,36 @@ export async function waitForTargetReceipt(hash: `0x${string}`) {
 
 export async function waitForSourceReceipt(hash: `0x${string}`) {
   return sourcePublicClient.waitForTransactionReceipt({ hash });
+}
+
+export async function readNativeBalance(account: Address): Promise<bigint> {
+  return publicClient.getBalance({ address: account });
+}
+
+export async function readUsdcBalance(account: Address): Promise<bigint> {
+  return (await publicClient.readContract({
+    address: addresses.usdc,
+    abi: MockUSDCAbi,
+    functionName: "balanceOf",
+    args: [account],
+  })) as bigint;
+}
+
+/** Send native currency for gas. Testnet faucet only; see the /faucet route. */
+export async function sendNative(to: Address, value: bigint): Promise<`0x${string}`> {
+  if (!targetWallet || !targetAccount) throw new Error("DEPLOYER_PRIVATE_KEY is required to fund");
+  return targetWallet.sendTransaction({ account: targetAccount, chain: settlementChain, to, value });
+}
+
+/** Mint test USDC. Only the mock token exposes this, which is the point. */
+export async function mintUsdc(to: Address, amount: bigint): Promise<`0x${string}`> {
+  if (!targetWallet || !targetAccount) throw new Error("DEPLOYER_PRIVATE_KEY is required to mint");
+  return targetWallet.writeContract({
+    account: targetAccount,
+    chain: settlementChain,
+    address: addresses.usdc,
+    abi: MockUSDCAbi,
+    functionName: "mint",
+    args: [to, amount],
+  });
 }

@@ -34,6 +34,28 @@ export const adServer = {
   earnings: (address: string) => getJson<{ address: string; accrued: string }>(`/earnings/${address}`),
   health: () => getJson<Record<string, unknown>>("/health"),
 
+  /** Testnet faucet: gas and mock USDC for the connected wallet, once a day. */
+  async faucet(address: string) {
+    try {
+      const res = await fetch(`${base}/faucet`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ address }),
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        funded?: boolean;
+        reason?: string;
+        error?: string;
+        gasTx?: string;
+        usdcTx?: string;
+      };
+      return { ok: res.ok && body.ok !== false, ...body };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  },
+
   /** Register a campaign creative (off-chain text/url; hash committed on-chain). */
   async registerCreative(body: { campaignId: string; advertiser: string; text: string; clickUrl: string; icon?: string }) {
     const res = await fetch(`${base}/campaigns`, {
