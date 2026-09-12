@@ -1,0 +1,9 @@
+{
+  "name": "@keryx/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Keryx contracts for Creditcoin and Attestcoin",
+  "dependencies": {
+    "@gluwa/asc-contracts": "0.2.1"
+  }
+}
