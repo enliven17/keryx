@@ -3,10 +3,32 @@
 import { useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected, mock } from "wagmi/connectors";
+import { usePrivy } from "@privy-io/react-auth";
 import { shortAddr } from "@/lib/format";
 import { DEV_ACCOUNT } from "@/lib/wagmi";
+import { privyEnabled } from "@/lib/privy";
 
+/** privyEnabled is a build-time constant, so only one of these ever mounts. */
 export function WalletButton() {
+  return privyEnabled ? <PrivyWallet /> : <LocalWallet />;
+}
+
+function PrivyWallet() {
+  const { ready, authenticated, login, logout } = usePrivy();
+  const { address } = useAccount();
+
+  if (!ready) return <button className="btn btn-ghost" disabled>Loading…</button>;
+  if (!authenticated) return <button className="btn btn-primary" onClick={login}>Connect wallet</button>;
+
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <span className="pill mono"><span className="dot" style={{ background: "var(--color-earn)" }} />{shortAddr(address)}</span>
+      <button className="btn btn-ghost" onClick={logout}>Disconnect</button>
+    </div>
+  );
+}
+
+function LocalWallet() {
   const { address, isConnected } = useAccount();
   const { connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();

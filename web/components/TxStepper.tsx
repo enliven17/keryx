@@ -155,9 +155,9 @@ function Marker({ state, index }: { state: StepState; index: number }) {
     flexShrink: 0,
   };
   if (state === "done")
-    return <div style={{ ...base, background: "var(--color-earn)", color: "#fff" }}>✓</div>;
+    return <div style={{ ...base, background: "var(--color-earn)", color: "#04211a" }}>✓</div>;
   if (state === "error")
-    return <div style={{ ...base, background: "var(--color-danger)", color: "#fff" }}>✕</div>;
+    return <div style={{ ...base, background: "var(--color-danger)", color: "#2a0a0a" }}>✕</div>;
   if (state === "active" || state === "confirming")
     return (
       <div style={{ ...base, border: "2px solid var(--color-brand)" }}>

@@ -19,8 +19,8 @@ export function Nav() {
     <nav
       style={{
         borderBottom: "1px solid var(--color-border)",
-        background: "rgba(251,251,252,0.85)",
-        backdropFilter: "blur(8px)",
+        background: "rgba(0,0,0,0.72)",
+        backdropFilter: "blur(14px) saturate(1.4)",
         position: "sticky",
         top: 0,
         zIndex: 30,

@@ -3,24 +3,10 @@ import { ReactNode } from "react";
 
 export function Logo({ size = 20 }: { size?: number }) {
   return (
-    <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none", color: "var(--color-text)" }}>
-      <span
-        style={{
-          width: size + 6,
-          height: size + 6,
-          borderRadius: 7,
-          background: "var(--color-brand)",
-          color: "#fff",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: 800,
-          fontSize: size - 4,
-        }}
-      >
-        K
-      </span>
-      <span style={{ fontWeight: 700, fontSize: size }}>Keryx</span>
+    <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 9, textDecoration: "none", color: "var(--color-text)" }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/keryx.svg" alt="" width={size + 8} height={size + 8} style={{ display: "block" }} />
+      <span style={{ fontWeight: 600, fontSize: size, letterSpacing: "-0.02em" }}>Keryx</span>
     </Link>
   );
 }

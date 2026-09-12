@@ -47,7 +47,7 @@ export function ClaudeTui() {
       style={{
         borderRadius: 14,
         overflow: "hidden",
-        boxShadow: "0 30px 80px rgba(17,17,27,0.20)",
+        boxShadow: "0 30px 80px rgba(0,0,0,0.6)",
         border: "1px solid #21262d",
         background: "#0d1117",
         fontFamily: "var(--font-mono)",
